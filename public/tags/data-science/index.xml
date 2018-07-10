@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data Science on Anderson Neisse</title>
+    <link>/tags/data-science/</link>
+    <description>Recent content in Data Science on Anderson Neisse</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Fri, 15 Dec 2017 12:00:00 -0400</lastBuildDate>
+    
+	<atom:link href="/tags/data-science/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>R4DS Slack Community: Signup data analysis</title>
+      <link>/post/2018-01-02-r4ds-slack-group/</link>
+      <pubDate>Fri, 15 Dec 2017 12:00:00 -0400</pubDate>
+      
+      <guid>/post/2018-01-02-r4ds-slack-group/</guid>
+      <description>Before anything else, I tried HARD to make tabsets work with blogdown but it doesn’t offer support to tabsets at all, nor folded code chunks, sadly. That said, this post might look longer than it really is! Unless you want to read every chunk of code, then it indeed IS as long as it seems.
+1 The groupThe R for Data Science book (R4DS) is a wonderfull book to introduce people both in the world of Data Science and R/RStudio.</description>
+    </item>
+    
+  </channel>
+</rss>

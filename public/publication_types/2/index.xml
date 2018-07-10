@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2 on Anderson Neisse</title>
+    <link>/publication_types/2/</link>
+    <description>Recent content in 2 on Anderson Neisse</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Tue, 06 Jun 2017 00:00:00 -0300</lastBuildDate>
+    
+	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Psychological Variables and Academic Performance: Canonical CorrelationAnalysis</title>
+      <link>/publication/cancorr-psych/</link>
+      <pubDate>Tue, 06 Jun 2017 00:00:00 -0300</pubDate>
+      
+      <guid>/publication/cancorr-psych/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title> Principal Components and Factor Analysis in Crime Data From 26 US States</title>
+      <link>/publication/pca-crimes-us/</link>
+      <pubDate>Wed, 23 Nov 2016 00:00:00 -0200</pubDate>
+      
+      <guid>/publication/pca-crimes-us/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
