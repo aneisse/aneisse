@@ -22,7 +22,7 @@ autolink = true
   <input type="email" name="_replyto" required="required" placeholder=""><br>
   <label for="message">Your message: </label><br>
   <textarea rows="4" name="message" id="message" required="required" class="form-control" placeholder=""></textarea>
-  <input type="hidden" name="_next" value="/html/thanks.html" />
+  <input type="hidden" name="_next" value="/" />
   <input type="submit" value="Send" name="submit" class="btn btn-primary btn-outline">
   <input type="hidden" name="_subject" value="Website message" />
   <input type="text" name="_gotcha" style="display:none" />
