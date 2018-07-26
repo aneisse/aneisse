@@ -13,7 +13,16 @@
     
     
     <item>
-      <title>Psychological Variables and Academic Performance: Canonical CorrelationAnalysis</title>
+      <title>AMMI and GGE Biplot for genotype × environment interaction: a medoid–based hierarchical cluster analysis approach for high–dimensional data</title>
+      <link>/publication/ammi-gge/</link>
+      <pubDate>Fri, 06 Jul 2018 00:00:00 -0300</pubDate>
+      
+      <guid>/publication/ammi-gge/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Psychological Variables and Academic Performance: Canonical Correlation Analysis</title>
       <link>/publication/cancorr-psych/</link>
       <pubDate>Tue, 06 Jun 2017 00:00:00 -0300</pubDate>
       
@@ -22,7 +31,7 @@
     </item>
     
     <item>
-      <title> Principal Components and Factor Analysis in Crime Data From 26 US States</title>
+      <title>Principal Components and Factor Analysis in Crime Data From 26 US States</title>
       <link>/publication/pca-crimes-us/</link>
       <pubDate>Wed, 23 Nov 2016 00:00:00 -0200</pubDate>
       

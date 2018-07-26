@@ -48,7 +48,7 @@ With the sheet in your account now it is possible to access it with `googlesheet
 
 It is worth to note that if it is the first time you are running `gs_ls()` you might have to authenticate your Google Drive Account and allow `googlesheets` to get data from your account.
 
-```{r eval=FALSE}
+```{r eval=FALSE, warning = FALSE}
 #Listing the accessible google sheets
 gs_ls()
 ```
@@ -57,7 +57,7 @@ From the `gs_ls()` command you might have figured that the first column is the s
 
 The package `googlesheets` perform API calls to Google Drive to obtain the data from the specified sheet. Any API call depends on a set of parameters that, in this case, `googlesheets` will handle for us. The `gs_title()` function obtains the API parameters based on the worksheet's title, which we will provide.
 
-```{r}
+```{r, warning = FALSE}
 #Getting the API parameters for the desired google sheet
 sheet_reference <- gs_title("R4DS deidentified data", verbose = F)
 ```
@@ -67,7 +67,7 @@ The parameters were assigned to the `sheet_reference` variable. If everything we
 
 Now that you specified which google sheet you want, you may also list the sheets inside a worksheet with `gs_ws_ls()`. When the worksheet you are interested in has more than one sheet, this command will be useful for you to specify exactly which sheet you want to download. if not specified, by default the package will download the first sheet in the worksheet.
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, warning = FALSE}
 #Listing all the sheets in our desired google sheet
 gs_ws_ls(sheet_reference)
 ```
@@ -76,7 +76,7 @@ For the "R4DS unidentified data" google sheet there's just one sheet named "Shee
 
 Parameters at hand! Now we can download and have a first look at the data with `googlesheets::gs_read()` and assing it to the `dados` variable. The word "dados" is brazilian for data, thats my way of broadly naming the data while preventing conflicts with any function's "data" parameter. Consider it my nationality's contribution for this post! ;D
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning = FALSE}
 #Downloading the data from the google sheet
 (dados <- gs_read(ss = sheet_reference, ws = "Sheet1"))
 ```
@@ -85,7 +85,7 @@ As we can see, `gs_read()` loaded a `tibble` with `r nrow(dados)` rows and `r nc
 
 We can see that the columns' names are mostly questions, not even appearing in their whole extent when the tibble is printed. 
 
-```{r}
+```{r, warning = FALSE}
 #original column names
 colnames(dados)
 ```
@@ -94,7 +94,7 @@ The reason for that is that this dataset is the result of a signup google form f
 
 We can assign shorter, meningful names to each column with `colnames()` so we don't have to type as much as we would have with those large column names. We'll also change **Cohort**'s numerical values into categories so it's explicit that the variable is categorical.
 
-```{r}
+```{r, warning = FALSE}
 #Assigning new names
 colnames(dados) <- c("Type", "RStudio", "Stats", "Location", "Cohort")
 
@@ -129,7 +129,7 @@ From now on, if you're completely new to the `tidyverse` or to R itself, things 
 
 There are some variables that are not obligatory in the registration form for the R4DS Online Learning Community. That said, we shoul firstly have a look at `NA` values in our dataset.
 
-```{r}
+```{r, warning = FALSE}
 #Counting NA cases in each column
 map_dbl(dados, ~sum(is.na(.) | . == ""))
 
@@ -145,7 +145,7 @@ Now that we've already cleaned the dataset from useless rows let's have a look a
 ##{.tabset .tabset-fade .tabset-pills}
 
 ### Cohorts
-```{r fig.align='center'}
+```{r fig.align='center', warning = FALSE}
 #Transforming the data and generating the plot
 plot <- dados %>% 
   count(Cohort) %>%
@@ -159,7 +159,7 @@ div(ggplotly(plot), align = "center")
 ```
 
 ### Types
-```{r}
+```{r, warning = FALSE}
 #Transforming the data and generating the plot
 plot <- dados %>% 
   count(Type) %>%
@@ -173,7 +173,7 @@ div(ggplotly(plot), align = "center")
 ```
 
 ### RStudio
-```{r}
+```{r, warning = FALSE}
 #Transforming the data and generating the plot
 plot <- dados %>% 
   count(RStudio) %>%
@@ -187,7 +187,7 @@ div(ggplotly(plot), align = "center")
 ```
 
 ### Stats
-```{r}
+```{r, warning = FALSE}
 #Transforming the data and generating the plot
 plot <- dados %>% 
   count(Stats) %>%
@@ -284,7 +284,7 @@ What about NOW we see all these awesome members scattered on a map?
 
 The best world maps are the interactive ones! We're going to need some coordinates so we can plot the map, right? But first, do you remember those **Location** rows with `NA` values? We're going to remove them now:
 
-```{r}
+```{r, warning = FALSE}
 #Remembering how many of them are there
 map_dbl(dados, ~sum(is.na(.)))
 
@@ -296,7 +296,7 @@ And there they go, they served their purpose and now are going to Valhalla. I as
 
 Now, the `ggmap` package provides us with the `geocode()` function, which receives a vector of locations, try to find them in Google Map's database and returns the best guesses' coordinates. We're going to pass **Location** to the function:
 
-```{r eval=FALSE}
+```{r eval=FALSE, warning = FALSE}
 #Passing locations to be searched in Google Maps
 lc_dt <- geocode(tolower(mp_dt$Location), source = "google")
 
@@ -307,7 +307,7 @@ It is worth to note that `ggmaps::geocode()` doesn't always return coordinates f
 
 After searching for a while about the (II) issue, I found out that it happens because of an intern query limit for the Google API's Calls. This issue might be solved for some locations by running the code and storing the non-error results in a separate variable and then repeating the process to try and obtain some other locations. Like the code below.
 
-```{r eval=FALSE}
+```{r eval=FALSE, warning = FALSE}
 #Run these 2 lines once
 longitude <- vector("double", length(mp_dt$Location))
 latitude <- vector("double", length(mp_dt$Location))
@@ -327,7 +327,7 @@ mp_dt <- cbind(mp_dt, longitude, latitude)
 
 I didn't wrap the code in a `while()` loop to prevent infinite loops in case the errors never get to 0%, as it could happen in the (I) case.
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning = FALSE}
 #write_csv(mp_dt, "mp_dt.csv")
 mp_dt <- read_csv("mp_dt.csv")
 ```
@@ -336,7 +336,7 @@ In one of my recent Kernels as a newbie in Kaggle ( [Terrorism Worldwide - Explo
 
 In order to plot a map using R, we need data concerning the map itself. The `maps::map()` function provides us with that.
 
-```{r}
+```{r, warning = FALSE}
 #Obtaining world map polygons
 world <- maps::map("world", fill = T, plot = F)
 
@@ -348,7 +348,7 @@ I used the `world` data to generate the basic layer with `leaflet()` and `addTil
 
 Also, since we're intended to plot markers for each member, we could use different colors for _Mentor_ and _Learners_ to see it on the map. 
 
-```{r}
+```{r, warning = FALSE}
 #Creating categorical color palette
 pal <- colorFactor( RColorBrewer::brewer.pal(2, "Dark2"), 
                    domain = mp_dt$Type, na.color = "white")
@@ -357,7 +357,7 @@ pal <- colorFactor( RColorBrewer::brewer.pal(2, "Dark2"),
 
 We're going to generate some variable strings to be plotted in the map with the markers, these strings are generated with `sprintf()` and strings based on the C language.
 
-```{r}
+```{r, warning = FALSE}
 #Generating texts
 strings <- sprintf(paste("<strong>%s</strong><br/><strong>%s</strong><br/>", 
                          names(mp_dt[2]), ": %s<br/>",

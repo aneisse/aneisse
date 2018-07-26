@@ -232,6 +232,11 @@ enableGitInfo = false
     icon = "github"
     icon_pack = "fa"
     link = "https://github.com/aneisse"
+    
+  [[params.social]]
+    icon = "kaggle"
+    icon_pack = "fa"
+    link = "https://www.kaggle.com/neisse/"
 
   [[params.social]]
     icon = "linkedin"

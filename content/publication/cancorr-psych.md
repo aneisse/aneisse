@@ -1,5 +1,5 @@
 +++
-title = "Psychological Variables and Academic Performance: Canonical CorrelationAnalysis"
+title = "Psychological Variables and Academic Performance: Canonical Correlation Analysis"
 date = 2017-06-06T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
@@ -18,7 +18,7 @@ publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
 publication = "In Engineering & Science (ES)."
-publication_short = "In *Eng. & Sci.*"
+publication_short = "In *Engineering & Science*"
 
 # Abstract and optional shortened version.
 abstract = "Multivariate analysis is a set of statistical techniques that allows the analysis and interpretation of quantitative data sets with large variable sets in a simplified form. Among the list of techniques, there is the canonical-correlation analysis (CCA), technique that aims to establish relation structure between two sets of variables by means of linear combinations that maximizes the correlation in between both sets. This article’s objective was to apply the CCA method to analyze the correlation structure in between three psychological variables and four academic performance variables. The psychological variables are locus of control, self-concept and motivation while the academic performance variables are reading, writing, math and science. The canonicalcorrelation analysis showed to be an effective method in establishing relation between psychological and academic performance variables as presented in the data. One out of three adjusted canonical functions turned out to be significant, reaching 44,64% canonical correlation and explaining 19,93% of the shared variability. Although effective, more psychological variables could be measured for the canonical correlation to explain greater proportions of shared variability."
