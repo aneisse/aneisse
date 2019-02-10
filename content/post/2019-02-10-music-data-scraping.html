@@ -30,10 +30,6 @@ library(furrr)</code></pre>
 <p>First let’s grab data on the artists, it’s a first step to know how many artists and musics the site has. At the end of this section we should have a data frame containing data on the artists on the website.</p>
 <p>To obtain our data frame we will need a list of links to artists’ pages on the site as well as a scrapper function to return the data we want from them. The scrapper is the function that will receive a link a an artist’s page and return the data we want. Using the <code>rvest</code> package we can build a scrapper.</p>
 <p>Let’s first build a scrapper that returns the data we need from a single artist. For that purpose I’m going to use the page for <a href="https://www.vagalume.com.br/green-day/">Green Day</a>.</p>
-<div class="figure">
-<img src="2019-02-10-music-data-scraping_img1.png" alt="Obtained from vagalume.com.br" />
-<p class="caption">Obtained from vagalume.com.br</p>
-</div>
 <p>We can see that it contains the bands name, the list of all the lyrics, and a subpage “Popularidade” with the popularity history of the band according to the site’s access history. Those pages are constant across all the artists while the others aren’t as some artists might not have them. Now, there are some information that we can get for individual artists:</p>
 <ul>
 <li>Artist’s name;</li>
