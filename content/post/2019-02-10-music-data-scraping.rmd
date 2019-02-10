@@ -233,14 +233,6 @@ all_artists_fixed <- all_artists %>%
   separate(Genres, c("G1", "G2", "G3"), sep = "; ") %>%  # Separating Genres variable
   gather(G1:G3, key = "G", value = "Genre") %>% select(-G) %>% 
   filter(Genre %in% genres_keep)
-
-all_artists_fixed %>% head(5)
-```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-## HIDDEN CHUNK
-all_artists_fixed <- read_csv("2019-02-10-music-data-scraping_artists-data.csv")
-all_artists_fixed %>% head(5)
 ```
   
   There, now we have some data on all artists on the Genres I specified. The number of rows grew up to $3622$ because of artists that had more than one label, I will rather maintain it this way since removing the duplicates might bias the results to one genre, at least this way the artists weight equally both genres they are present in. The dataset on artists is built! We can do a last step on the data scraping before we stop for today: Scraping their lyrics!
@@ -316,9 +308,7 @@ p_get_lyrics_links <- possibly(get_lyrics_links,
 
 # Returning all the links to the musics
 plan(multisession)
-tictoc::tic()
 all_songs_links <- future_map_dfr(all_artists_links, ~p_get_lyrics_links(.))
-tictoc::toc()
 ```
   
   After a 82.98 seconds wait on my case we found out that there are $209.522$ songs for our $3.355$ artists. 
@@ -337,12 +327,6 @@ all_lyrics <- future_map_chr(all_songs_links$SLink, ~p_get_lyric(.)[1], .progres
 
 # Adding it to the dataframe
 all_songs_links$Lyric <- all_lyrics %>% str_replace_all("\\. \\. ", ". ")
-all_songs_links %>% head(5)
-```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-all_songs_links <- read_csv("2019-02-10-music-data-scraping_lyrics-data.csv")
-all_songs_links %>% head(5)
 ```
 
   This one took around 9,064.08 seconds (151 minutes) to finish, quite some time! 
