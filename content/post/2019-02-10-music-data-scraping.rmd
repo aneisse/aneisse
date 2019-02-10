@@ -2,7 +2,7 @@
 title: "Scraping lyrics data from vagalume.com"
 author: "Anderson Neisse"
 date: 2019-02-10T12:00:00-04:00
-categories: ["Visualization"]
+categories: ["Web Scraping"]
 tags: ["Web Scraping", "Music"]
 header:
   caption: ''
