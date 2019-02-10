@@ -1,7 +1,7 @@
 ---
 title: "R4DS Slack Community: Signup data analysis"
 author: "Anderson Neisse"
-date: 2017-12-15T12:00:00-04:00
+date: 2017-12-15
 categories: ["Visualization"]
 tags: ["Statistics", "Data Science", "R4DS", "Maps", "Exploratory Analysis"]
 header:

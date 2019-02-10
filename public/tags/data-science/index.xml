@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy;</copyright>
-    <lastBuildDate>Fri, 15 Dec 2017 12:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 15 Dec 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/data-science/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>R4DS Slack Community: Signup data analysis</title>
       <link>/post/2018-01-02-r4ds-slack-group/</link>
-      <pubDate>Fri, 15 Dec 2017 12:00:00 -0400</pubDate>
+      <pubDate>Fri, 15 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>/post/2018-01-02-r4ds-slack-group/</guid>
       <description>Before anything else, I tried HARD to make tabsets work with blogdown but it doesn’t offer support to tabsets at all, nor folded code chunks, sadly. That said, this post might look longer than it really is! Unless you want to read every chunk of code, then it indeed IS as long as it seems.
