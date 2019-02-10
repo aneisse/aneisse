@@ -1,0 +1,7 @@
+To run the .rmd file, files named 
+"2019-02-10-music-data-scraping_artists-data.csv"
+and
+"2019-02-10-music-data-scraping_lyrics-data.csv"
+
+are needed. These datasets can be obtained on 
+https://www.kaggle.com/neisse/scrapped-lyrics-from-6-genres
