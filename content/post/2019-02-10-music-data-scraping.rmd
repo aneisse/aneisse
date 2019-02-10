@@ -44,8 +44,6 @@ library(furrr)
   
   Let's first build a scrapper that returns the data we need from a single artist. For that purpose I'm going to use the page for [Green Day](https://www.vagalume.com.br/green-day/).
 
-![Obtained from vagalume.com.br](2019-02-10-music-data-scraping_img1.png)
-
   We can see that it contains the bands name, the list of all the lyrics, and a subpage "Popularidade" with the popularity history of the band according to the site's access history.  Those pages are constant across all the artists while the others aren't as some artists might not have them. Now, there are some information that we can get for individual artists:
   
   - Artist's name;
