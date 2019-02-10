@@ -2,15 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
     
-    
     <url>
     
-      <loc>/publication/ammi-gge/</loc>
-      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
+      <loc>/post/2019-02-10-music-data-scraping/</loc>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
     </url>
     
   
     
+    <url>
+    
+      <loc>/publication/ammi-gge/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+    </url>
+    
+  
     
     <url>
     
@@ -20,107 +26,72 @@
     
   
     
-    
     <url>
     
       <loc>/publication/cancorr-psych/</loc>
-      <lastmod>2017-06-06T00:00:00-03:00</lastmod>
+      <lastmod>2017-06-06T00:00:00-04:00</lastmod>
     </url>
     
   
-    
-    
-    <url>
-    
-      <loc>/tags/academic/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/talk/example-talk/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/post/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/talk/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
-    </url>
-    
-  
-    
     
     <url>
     
       <loc>/publication/pca-crimes-us/</loc>
-      <lastmod>2016-11-23T00:00:00-02:00</lastmod>
+      <lastmod>2016-11-23T00:00:00-03:00</lastmod>
     </url>
     
   
-    
     
     <url>
     
-      <loc>/project/deep-learning/</loc>
-      <lastmod>2016-04-27T00:00:00-03:00</lastmod>
+      <loc>/author/admin/</loc>
     </url>
     
   
-    
-    
-    <url>
-    
-      <loc>/project/example-external-project/</loc>
-      <lastmod>2016-04-27T00:00:00-03:00</lastmod>
-    </url>
-    
-  
-    
     
     <url>
     
       <loc>/publication_types/2/</loc>
-      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
   
     
+    <url>
+    
+      <loc>/authors/ac-neisse/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
     
     <url>
     
       <loc>/</loc>
-      <lastmod>2016-04-20T00:00:00-03:00</lastmod>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
   
     
+    <url>
+    
+      <loc>/author/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/authors/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
     
     <url>
     
@@ -129,7 +100,6 @@
     </url>
     
   
-    
     
     <url>
     
@@ -140,27 +110,6 @@
     
   
     
-    
-    <url>
-    
-      <loc>/tags/deep-learning/</loc>
-      <lastmod>2016-04-27T00:00:00-03:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/demo/</loc>
-      <lastmod>2016-04-27T00:00:00-03:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
     <url>
     
       <loc>/tags/exploratory-analysis/</loc>
@@ -170,6 +119,23 @@
     
   
     
+    <url>
+    
+      <loc>/authors/jl-kirch/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/authors/k-hongyu/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
     
     <url>
     
@@ -180,26 +146,39 @@
     
   
     
-    
     <url>
     
-      <loc>/project/</loc>
-      <lastmod>2016-04-27T00:00:00-03:00</lastmod>
+      <loc>/tags/music/</loc>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
   
     
+    <url>
+    
+      <loc>/post/</loc>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
+    </url>
+    
+  
     
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
   
     
+    <url>
+    
+      <loc>/publication/</loc>
+      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+    </url>
+    
+  
     
     <url>
     
@@ -210,6 +189,12 @@
     
   
     
+    <url>
+    
+      <loc>/talk/</loc>
+    </url>
+    
+  
     
     <url>
     
@@ -220,21 +205,28 @@
     
   
     
-    
     <url>
     
       <loc>/tags/</loc>
-      <lastmod>2017-01-01T00:00:00-02:00</lastmod>
+      <lastmod>2017-12-15T12:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
   
     
-    
     <url>
     
       <loc>/categories/visualization/</loc>
-      <lastmod>2017-12-15T12:00:00-04:00</lastmod>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/web-scraping/</loc>
+      <lastmod>2019-02-10T12:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     

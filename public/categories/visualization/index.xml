@@ -6,11 +6,20 @@
     <description>Recent content in Visualization on Anderson Neisse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Fri, 15 Dec 2017 12:00:00 -0400</lastBuildDate>
+    <copyright>&amp;copy;</copyright>
+    <lastBuildDate>Sun, 10 Feb 2019 12:00:00 -0400</lastBuildDate>
     
 	<atom:link href="/categories/visualization/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Scraping lyrics data from vagalume.com</title>
+      <link>/post/2019-02-10-music-data-scraping/</link>
+      <pubDate>Sun, 10 Feb 2019 12:00:00 -0400</pubDate>
+      
+      <guid>/post/2019-02-10-music-data-scraping/</guid>
+      <description>Today I woke up with a desire to stretch my web scraping skills and willing to do so while listening to some music, so why not scrap some music data? In this post I will scrap som data on artists and their lyrics so in a future post I plan on having some visualizations on the data as well as train a LSTM on the lyrics and maybe make it compose some new ones!</description>
+    </item>
     
     <item>
       <title>R4DS Slack Community: Signup data analysis</title>
