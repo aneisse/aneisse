@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "2019/02/23"
+date: "23 de Fevereiro de 2019<br><br>Slides em: bit.ly/2SWK467"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -736,3 +736,5 @@ Apresentação criada com o pacote [**xaringan**](https://github.com/yihui/xarin
 Twitter: [@a_neisse](https://twitter.com/a_neisse)
 
 LinkedIn: [anderson-neisse](https://www.linkedin.com/in/anderson-neisse/)
+
+Código da apresentação no [Github](https://github.com/aneisse/tutorial-rmarkdown)
