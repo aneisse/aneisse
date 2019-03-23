@@ -24,6 +24,11 @@ publication_short = "In *Biometrical Letters*"
 abstract = "The presence of genotype-environment interaction (GEI) influences production making the selection of cultivars in a complex process. The two most used methods to analyze GEI and evaluate genotypes are AMMI and GGE Biplot, being used for the analysis of multi environment trials data (MET). Despite their different approaches, both models complement each other in order to strengthen decision making. However, both models are based on biplots, consequently, biplot-based interpretation doesn’t scale well beyond two-dimensional plots, which happens whenever the first two components don’t capture enough variation. This paper proposes an approach to such cases based on cluster analysis combined with the concept of medoids. It also applies AMMI and GGE Biplot to the adjusted data in order to compare both models. The data is provided by the International Maize and Wheat Improvement Center (CIMMYT) and comes from the 14th Semi-Arid Wheat Yield Trial (SAWYT), an experiment concerning 50 genotypes of spring bread wheat (Triticum aestivum) germplasm adapted to low rainfall. It was performed in 36 environments across 14 countries. The analysis provided 25 genotypes clusters and 6 environments clusters. Both models were equivalent for the data's evaluation, permitting increased reliability in the selection of superior cultivars and test environments."
 abstract_short = ""
 
+<style>
+body {
+text-align: justify}
+</style>
+
 # Featured image thumbnail (optional)
 image_preview = ""
 
