@@ -13,7 +13,7 @@
     <url>
     
       <loc>/publication/ammi-gge/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
     </url>
     
   
@@ -29,7 +29,7 @@
     <url>
     
       <loc>/publication/cancorr-psych/</loc>
-      <lastmod>2017-06-06T00:00:00-04:00</lastmod>
+      <lastmod>2017-06-06T00:00:00-03:00</lastmod>
     </url>
     
   
@@ -37,7 +37,7 @@
     <url>
     
       <loc>/publication/pca-crimes-us/</loc>
-      <lastmod>2016-11-23T00:00:00-03:00</lastmod>
+      <lastmod>2016-11-23T00:00:00-02:00</lastmod>
     </url>
     
   
@@ -51,17 +51,15 @@
     
     <url>
     
-      <loc>/publication_types/2/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
-      <priority>0</priority>
+      <loc>/publication/cancorr-psych/</loc>
     </url>
     
   
     
     <url>
     
-      <loc>/authors/ac-neisse/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <loc>/publication_types/2/</loc>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -78,6 +76,15 @@
     
     <url>
     
+      <loc>/authors/anderson-neisse/</loc>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/author/</loc>
       <priority>0</priority>
     </url>
@@ -87,7 +94,7 @@
     <url>
     
       <loc>/authors/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -121,8 +128,8 @@
     
     <url>
     
-      <loc>/authors/jl-kirch/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <loc>/authors/jhessica-kirch/</loc>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -131,7 +138,16 @@
     <url>
     
       <loc>/authors/k-hongyu/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <lastmod>2016-11-23T00:00:00-02:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/authors/kuang-hongyu/</loc>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -166,7 +182,7 @@
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -175,7 +191,7 @@
     <url>
     
       <loc>/publication/</loc>
-      <lastmod>2018-07-06T00:00:00-04:00</lastmod>
+      <lastmod>2018-07-06T00:00:00-03:00</lastmod>
     </url>
     
   

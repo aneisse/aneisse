@@ -240,11 +240,11 @@ get_lyrics_links(&quot;/green-day/&quot;) %&gt;% head(5)</code></pre>
 <pre><code>## # A tibble: 5 x 3
 ##   ALink      SName                     SLink                               
 ##   &lt;chr&gt;      &lt;chr&gt;                     &lt;chr&gt;                               
-## 1 /green-da~ Good Riddance (Time Of Y~ /green-day/good-riddance-time-of-yo~
-## 2 /green-da~ Boulevard Of Broken Drea~ /green-day/boulevard-of-broken-drea~
-## 3 /green-da~ Wake Me Up When Septembe~ /green-day/wake-me-up-when-septembe~
-## 4 /green-da~ 21 Guns                   /green-day/21-guns.html             
-## 5 /green-da~ Holiday                   /green-day/holiday.html</code></pre>
+## 1 /green-da~ Boulevard Of Broken Drea~ /green-day/boulevard-of-broken-drea~
+## 2 /green-da~ Good Riddance (Time Of Y~ /green-day/good-riddance-time-of-yo~
+## 3 /green-da~ Holiday                   /green-day/holiday.html             
+## 4 /green-da~ Wake Me Up When Septembe~ /green-day/wake-me-up-when-septembe~
+## 5 /green-da~ Basket Case               /green-day/basket-case.html</code></pre>
 <p>Notice that I use <code>html_attr("href")</code> to extract the attribute “href” from the html object, which is the link to the song page. Let’s map this function through all the artists we have in order to obtain the links to the musics:</p>
 <pre class="r"><code># Generating safe version of get_lyrics_links()
 p_get_lyrics_links &lt;- possibly(get_lyrics_links, 
