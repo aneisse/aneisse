@@ -24,6 +24,11 @@ publication_short = "In *Engineering & Science*"
 abstract = "Multivariate analysis is a set of statistical techniques that allows the analysis and interpretation of quantitative data sets with large number of variables in a simplified form. Among the list of techniques there are the principal component analysis (PCA) and factor analysis (FA), both aims are to reduce the number of variables by grouping them according to their variability. This article aims to demonstrate the applicability of the PCA and FA techniques in the interpretation of the 26 US states crime data."
 abstract_short = ""
 
+<style>
+body {
+text-align: justify}
+</style>
+
 # Featured image thumbnail (optional)
 image_preview = ""
 

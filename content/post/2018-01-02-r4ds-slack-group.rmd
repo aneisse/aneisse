@@ -57,7 +57,7 @@ From the `gs_ls()` command you might have figured that the first column is the s
 
 The package `googlesheets` perform API calls to Google Drive to obtain the data from the specified sheet. Any API call depends on a set of parameters that, in this case, `googlesheets` will handle for us. The `gs_title()` function obtains the API parameters based on the worksheet's title, which we will provide.
 
-```{r, warning = FALSE}
+```{r, eval=FALSE, warning = FALSE}
 #Getting the API parameters for the desired google sheet
 sheet_reference <- gs_title("R4DS deidentified data", verbose = F)
 ```
@@ -76,9 +76,13 @@ For the "R4DS unidentified data" google sheet there's just one sheet named "Shee
 
 Parameters at hand! Now we can download and have a first look at the data with `googlesheets::gs_read()` and assing it to the `dados` variable. The word "dados" is brazilian for data, thats my way of broadly naming the data while preventing conflicts with any function's "data" parameter. Consider it my nationality's contribution for this post! ;D
 
-```{r, message=FALSE, warning = FALSE}
+```{r, eval=FALSE, message=FALSE, warning = FALSE}
 #Downloading the data from the google sheet
 (dados <- gs_read(ss = sheet_reference, ws = "Sheet1"))
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+(dados <- read_csv("2018-01-02-r4ds-slack-group_data.csv"))
 ```
 
 As we can see, `gs_read()` loaded a `tibble` with `r nrow(dados)` rows and `r ncol(dados)` columns (variables). That's it! Now we have the data in RStudio to do as we like. 
@@ -96,7 +100,7 @@ We can assign shorter, meningful names to each column with `colnames()` so we do
 
 ```{r, warning = FALSE}
 #Assigning new names
-colnames(dados) <- c("Type", "RStudio", "Stats", "Location", "Cohort")
+colnames(dados) <- c("Type", "RStudio", "Stats", "Location", "Cohort", "lon", "lat")
 
 #Converting variables into categorical
 dados$Cohort <- ifelse(dados$Cohort == 1, "First", "Second")
@@ -134,7 +138,7 @@ There are some variables that are not obligatory in the registration form for th
 map_dbl(dados, ~sum(is.na(.) | . == ""))
 
 #Removing rows with only NA cases
-dados <- dados %>%filter(!is.na(Type))
+dados <- dados %>% filter(!is.na(Type))
 ```
 
 
@@ -329,7 +333,7 @@ I didn't wrap the code in a `while()` loop to prevent infinite loops in case the
 
 ```{r, echo=FALSE, message=FALSE, warning = FALSE}
 #write_csv(mp_dt, "mp_dt.csv")
-mp_dt <- read_csv("mp_dt.csv")
+mp_dt <- dados
 ```
 
 In one of my recent Kernels as a newbie in Kaggle ( [Terrorism Worldwide - Exploratory Analysis](https://www.kaggle.com/neisse/terrorism-worldwide-exploratory-analysis) ) I wrote a not-that-good function to plot choropleth maps using the `leaflet` package. I'm going to use that function's code and modify it a little in a way that it plots our members with labelled markers instead of countries' polygons.
