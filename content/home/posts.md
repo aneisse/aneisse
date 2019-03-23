@@ -9,13 +9,13 @@ title = "Blog Posts"
 subtitle = ""
 
 # Number of recent posts to list.
-count = 5
+count = 2
 
 # View.
 #   1 = List
 #   2 = Compact
 #   3 = Card
-view = 2
+view = 3
 
 # Filter posts by tag or category.
 #  E.g. to only show posts tagged with `Academic`, set `filter_tag = "Academic"`

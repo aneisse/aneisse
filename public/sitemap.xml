@@ -4,7 +4,7 @@
     
     <url>
     
-      <loc>/post/2019-02-10-music-data-scraping/</loc>
+      <loc>/post/2019-02-10-music-data-scraping/2019-02-10-music-data-scraping/</loc>
       <lastmod>2019-02-10T00:00:00+00:00</lastmod>
     </url>
     
@@ -20,7 +20,7 @@
     
     <url>
     
-      <loc>/post/2018-01-02-r4ds-slack-group/</loc>
+      <loc>/post/2018-01-02-r4ds-slack-group/2018-01-02-r4ds-slack-group/</loc>
       <lastmod>2017-12-15T00:00:00+00:00</lastmod>
     </url>
     
@@ -45,13 +45,6 @@
     <url>
     
       <loc>/author/admin/</loc>
-    </url>
-    
-  
-    
-    <url>
-    
-      <loc>/publication/cancorr-psych/</loc>
     </url>
     
   
@@ -130,15 +123,6 @@
     
       <loc>/authors/jhessica-kirch/</loc>
       <lastmod>2018-07-06T00:00:00-03:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    <url>
-    
-      <loc>/authors/k-hongyu/</loc>
-      <lastmod>2016-11-23T00:00:00-02:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -241,7 +225,7 @@
     
     <url>
     
-      <loc>/categories/web-scraping/</loc>
+      <loc>/tags/web-scraping/</loc>
       <lastmod>2019-02-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -250,7 +234,7 @@
     
     <url>
     
-      <loc>/tags/web-scraping/</loc>
+      <loc>/categories/web-scraping/</loc>
       <lastmod>2019-02-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>

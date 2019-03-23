@@ -1,5 +1,5 @@
 ---
-title: "Scraping lyrics data from vagalume.com"
+title: "Scraping lyrics from Vagalume"
 author: "Anderson Neisse"
 date: 2019-02-10
 categories: ["Web Scraping"]

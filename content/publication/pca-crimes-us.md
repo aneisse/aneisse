@@ -3,7 +3,7 @@ title = "Principal Components and Factor Analysis in Crime Data From 26 US State
 date = 2016-11-23T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Anderson Neisse", "K Hongyu"]
+authors = ["Anderson Neisse", "Kuang Hongyu"]
 
 # Publication type.
 # Legend:
