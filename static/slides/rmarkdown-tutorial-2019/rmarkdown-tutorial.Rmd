@@ -3,6 +3,7 @@ title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
 date: "23 de Fevereiro de 2019<br><br>Slides em: bit.ly/2SWK467"
+bibliography: referencias.bib
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -14,6 +15,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
+library(tidyverse)
 ```
 
 # O que é? 
@@ -63,7 +65,7 @@ options(htmltools.dir.version = FALSE)
   
   - [Github](https://github.com/rstudio/rmarkdown);
   
-- [R Markdown: The Definitive](https://bookdown.org/yihui/rmarkdown/):
+- [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/):
   - Livro detalhado;
   
   - Autora do pacote.
@@ -107,13 +109,11 @@ Mas seu uso facilita muito criação de documentos.
 
 # Em resumo:
 
-A idéia base é muiuto simples:
+A idéia base é simples:
   
   - Intercalar narrativa com código em um documento;
   
   - "Tricotar" o documento gerando resultados a partir do código;
-  
-  - Então você têm seu relatório pronto.
 
 --
   
@@ -137,17 +137,17 @@ class: inverse, center, middle
 
 # Use cases
 
-### Como R Markdown é útil?
+### Como R Markdown se faz útil?
 
 ---
 
 # Airbnb
 
-Documentam todas as análises em R com o R Markdown.
+Documentam todas as análises em R com o R Markdown. 
  
 Relatórios finais são revisados e mantidos em repositório de conhecimento.
   
-```{r, out.height=200, out.width=150, echo=FALSE, fig.align='center'}
+```{r, out.height=180, out.width=150, echo=FALSE, fig.align='center'}
 knitr::include_graphics("https://logodownload.org/wp-content/uploads/2016/10/Airbnb-Logo-9.png")
 ```
 --
@@ -155,12 +155,12 @@ knitr::include_graphics("https://logodownload.org/wp-content/uploads/2016/10/Air
 
 Todas as áreas podem consultar, analisar e reproduzir resultados passados.
 
---
-
 Também permite aos Cientistas de Dados a:
   - Aprenderem com análises anteriores;
   
   - Reproduzirem resultados.
+
+Mais detalhes nesse [post](https://medium.com/airbnb-engineering/using-r-packages-and-education-to-scale-data-science-at-airbnb-906faa58e12d).
 
 
 ---
@@ -169,8 +169,7 @@ Também permite aos Cientistas de Dados a:
 
 O R Markdown permite gerar relatórios com programação!
 
-**Mine Çetinkaya-Rundel** quis criou mensagens personalizadas para um Workshop.
-
+**Mine Çetinkaya-Rundel** criou mensagens personalizadas para um Workshop.
 
 
 ```{r, out.height=200, out.width=350, echo=FALSE, fig.align='center'}
@@ -210,6 +209,76 @@ Chris Hartgerink escreveu um [post](https://elifesciences.org/labs/cad57bcf/comp
 Disponibiliza várias possibilidades de sites a serem criados em R Markdown.
   
   - [blogdown: Creating Websites with R Markdown](https://bookdown.org/yihui/blogdown/).
+
+---
+class: inverse, center, middle
+
+# Algumas informações prévias
+
+## `setwd()`, R Markdown e Projetos
+
+---
+# Uso de setwd
+
+Como dito pela engenheira do RStudio [@JennyBryan](https://twitter.com/JennyBryan) em uma conferência:
+
+> If the first lines of your R script is
+>
+> `setwd("C:\Users\jenny\path\that\only\I\have")`
+
+> `rm(list = ls())`
+>
+> I will come into your office and SET YOUR COMPUTER ON FIRE 🔥.
+
+--
+
+<br>
+
+Por não serem boas práticas no contexto de reprodutibilidade:
+
+- Outra pessoa precisaria alterar o caminho em `setwd()` (Você no futuro!);
+
+- A chamada `rm(list = ls())` limpa somente os **objetos do ambiente**.
+
+<br>
+
+Para scripts uma alternativa ao `setwd()` é o pacote `here`, explicado [aqui](https://github.com/jennybc/here_here).
+
+---
+## R Markdown
+
+O R Markdown resolve estes problemas:
+
+  - `setwd()`: Considera o `wd` como sendo o local aonde o arquivo .Rmd está;
+  
+  - `rm(list = ls())`: Quando compilado, é rodado em um ambiente isolado, limpo.
+
+--
+
+## Projetos
+
+Os projetos são uma solução mais geral. Criados por `File -> New Project`.
+
+Cria um arquivo **.RProj** na pasta, que isola um ambiente limpo do R.
+
+Desta forma ao trocar entre projetos, os ambientes não se misturam.
+
+O Projeto também considera o `wd` como sendo a localização do **.RProj**.
+
+---
+# Texto exemplo
+
+Texto que será utilizado para "dar corpo" a documentos de exemplo:
+
+>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+<br>
+
+Será utilizado durante o resto da aula.
+
+<br>
+
+Se quiser, salve em um **.txt** e o mantenha aberto.
 
 ---
 class: inverse, center, middle
@@ -277,12 +346,14 @@ Traz as informações usadas para renderizar o documento.
 ```{r, eval=FALSE}
 ---
 title: "Documento Qualquer"
+subtitle: "Exemplo de cabeçalho YAML"
 author: "Anderson Neisse"
 date: "23/02/2019"
 output: 
   html_document:
     toc: true
-    toc_depth: 2
+  pdf_document:
+    toc: false
 ---
 ```
 
@@ -309,7 +380,7 @@ knitr::include_graphics("https://bookdown.org/yihui/rmarkdown/images/format-drop
 
 Basicamente, o `output` do YAML é alterado.
 
-Pacotes de extensão podem introduzir novos formatos, como o `tufte`.
+Pacotes extendem para novos formatos, como o `tufte` e o `rticles`.
 
 O RStudio tem uma página de [Referência de Formatos](https://rmarkdown.rstudio.com/formats.html).
 
@@ -319,6 +390,27 @@ class: inverse, center, middle
 # Sintaxe Markdown
 
 ### A implementação Pandoc
+
+---
+# Definição de Seções
+
+A criação de seções usa Markdown como base:
+
+```{r}
+# Seção
+```
+# Seção
+
+```{r}
+## Sub-seção
+```
+## Subseção
+
+...e assim por diante.
+
+--
+
+A adição de `number_sections: true` abaixo do formato do documento no YAML enumera as seções.
 
 ---
 # Formatação de texto
@@ -331,14 +423,8 @@ As principais funcionalidades são:
   
   - ~~Cortado~~ usando `~~Cortado~~`;
   
-  - [Link](https://aneisse.com/) usando `[Link](https://www.link.com)`;
-  
-  - Imagem usando "![](caminho ou link)" ou:
-
-```{r, eval=FALSE}
-# Este método permite opções de escala e posição da imagem no {r}
-knitr::include_graphics("caminho ou link")
-```
+  - Linha horizontal: "---" 
+  ---
 
 O RStudio tem documento de [referência de R Markdown](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf).
 
@@ -372,6 +458,63 @@ Ou listas ordenadas com `1., 2., ...`:
   2. Outro item
 
 ---
+# Equações
+
+Equações na linha podem ser escritas dentro de um par de cifrões `$` em LaTeX:
+
+`${n \choose k} p^{k} (1-p)^{n-k}$` retorna ${n \choose k} p^{k} (1-p)^{n-k}$
+
+--
+
+Equações multi-linha devem ser envolas em cifrões duplos `$$`:
+
+```{r, eval=FALSE}
+$$
+  {n \choose k} p^{k} (1-p)^{n-k}
+$$
+```
+
+retorna
+
+$${n \choose k} p^{k} (1-p)^{n-k}$$
+
+---
+
+# Tabelas
+
+Para criar manualmente, com **Markdown**:
+
+```{r, eval=FALSE}
+                  |Coluna1|Coluna2|Coluna3|
+                  |-------|:-----:|------:|
+                  |   1   |   2   |   3   |
+```
+
+<br>
+
+O que resulta em:
+
+|Coluna1|Coluna2|Coluna3|
+|-------|:-----:|------:|
+|   1   |   2   |   3   |
+
+<br><br>
+
+Veremos como criar tabelas mais elaboradas com `kableExtra`.
+
+---
+
+# Figuras
+
+Podemos inserir figuras locais (ou links da internet):
+
+```{r, eval=FALSE}
+![Figura](blackhole.jpg)
+```
+
+![Figura](blackhole.jpg)
+
+---
 
 # Texto em blocos e citações
 
@@ -402,62 +545,17 @@ Ou blocos de código em geral com identação de quatro `tabs`/`espaços`:
 
         Este texto será gerado em fonte de código.
 
-
----
-# Definição de Seções
-
-A criação de seções usa Markdown como base:
-
-```{r}
-# Seção
-```
-# Seção
-
-```{r}
-## Sub-seção
-```
-## Subseção
-
-```{r}
-### Sub-sub-seção
-```
-### Sub-sub-seção
-
----
-# Equações
-
-Equações na linha podem ser escritas dentro de um par de cifrões `$` em LaTeX:
-
-`${n \choose k} p^{k} (1-p)^{n-k}$` retorna ${n \choose k} p^{k} (1-p)^{n-k}$
-
---
-
-Equações multi-linha devem ser envolas em cifrões duplos `$$`:
-
-```{r, eval=FALSE}
-$$
-  {n \choose k} p^{k} (1-p)^{n-k}
-$$
-```
-
-retorna
-
-$${n \choose k} p^{k} (1-p)^{n-k}$$
 ---
 class: inverse, center, middle
 
 # Códigos e Resultados em R
 ### Chunks (Pedaços) de código
 ---
-# Códigos R
+# Códigos R - chunks
 
-Todo código em R deve ser insrido em *chunks* (pedaços). 
+Todo código multi-linha em R deve ser inserido em *chunks* (pedaços). 
 
-### Código multi-linha
-
-Atalho: `Ctrl + Alt + i`.
-
-```{r, out.height=400, out.width=400}
+```{r media, eval=FALSE}
 #Código dentro de um chunk
 mean(1:10)
 ```
@@ -475,7 +573,7 @@ Este valor foi calculado na geração do documento com `mean(1:10)`: `r mean(1:1
 Permite muitas possibilidades de relatórios dinâmicos.
 
 ---
-# Opções de código
+# Opções dos chunks
 
 Existem opções para códigos no relatório:
 
@@ -498,6 +596,26 @@ mean(1:10)
   - [Várias outras](https://yihui.name/knitr/options/).
 
 ---
+
+# Tabelas
+
+Podemos utilizar o pacote `kableExtra` para criar tabelas:
+
+```{r}
+tibble(Coluna1 = c(11, 12), Coluna2 = c(21, 22)) %>% 
+  kableExtra::kable(align = c("r", "c"), 
+                    caption = "Tabela 1: Exemplo de tabela")
+```
+
+--
+
+Existe uma vantagem quanto ao método do **Markdown** pela customização.
+
+Várias opções podem ser adicionadas, especialmente em HTML.
+
+Todas as opções para [HTML](http://haozhu233.github.io/kableExtra/awesome_table_in_html.html) e [PDF](http://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf).
+---
+
 # Imagens
 
 Gráficos serão mostrados logo abaixo do chunk:
@@ -511,7 +629,7 @@ Também podemos usar `knitr::include_graphics("caminho ou link")` para inserir f
 ---
 # Opções de Imagens
 
-Também existem pções de imagens dentro de `{r}`, como:
+Também existem opções de imagens dentro de `{r}`, como:
 
   - `out.height` e `out.width`: Ajusta dimensões da imagem no relatório.
   
@@ -535,7 +653,7 @@ O RStudio faz API com outras linguagens instaladas.
 
 Pode ser inseridos códigos de outras linguagens como:
 
-  - Python: {python}, usando o apcote `reticulate`;
+  - Python: {python}, usando o pacote `reticulate`;
   
   - SQL: {sql}, precisa de conexão com o BD;
   
@@ -556,14 +674,165 @@ print(b) # Imprime
 ---
 class: inverse, center, middle
 
-# Documentos interativos
+# Introdução a Relatórios Científicos
 
-### Widgets HTML e Shiny
+### Alguns elementos importantes
+
+---
+
+### Abstract
+
+O R markdown permite inclusão de abstract no YAML:
+
+```{r, eval=FALSE}
+abstract: "Texto aqui"
+```
+
+--
+
+### Sumário
+
+```{r, eval=FALSE}
+lang: pt-BR
+pdf_document:
+  toc: true
+  toc_depth: 2
+```
+
+A opção `toc_depth: 2` define a profundidade de seções. E `lang: pt-BR` muda os títulos.
+
+--
+
+### Quebras de página
+
+Quebras de página podem ser inseridas com comandos LaTex `\pagebreak` ou `\newpage`.
+
+---
+
+## Referências
+
+Utilizando a opção do YAML `bibliography: referencias.bib`, pode-se utilizar a mecânica do LaTeX.
+
+Uma referência é especificada no `.bib` como:
+
+```{r, eval=FALSE}
+@book{casella,
+  title={Statistical inference},
+  author={Casella, George and Berger, Roger L},
+  volume={2},
+  year={2002},
+  publisher={Duxbury Pacific Grove, CA}
+}
+```
+
+Então, no `.Rmd`:
+  - `[@casella]` resulta em  *(Casella e Berger 2002)*;
+  - `@casella` resulta em *Casella e Berger (2002)*;
+  - `[@casella; @bortolini]` resulta *(Casella e Berger 2002; Bortolini 2015)*.
+  
+Um  [arquivo de exemplo](referencias.bib) utilizado na apresentação.
+
+---
+# Cross-Reference
+
+### A Seções
+
+Pode-se fazer referências por link a seções (PDF e HTML) da forma:
+
+```{r}
+# Nome da Seção{id}
+```
+
+Então utilizando no texto: `[texto](id)`.
+
+### Tabelas e Gráficos
+
+Podemos criar numeração automática da forma:
+
+  - Tabela: Definindo `kable(caption = "Título")`;
+  - Figura: Opção `fig.cap = "Título"` do chunk.
+  
+Definirmos uma label para o chunk `{r label}`, então podemos referenciar no texto como `\@ref(tab:label)` ou `\@ref(fig:label)`. [Mais detalhes](https://bookdown.org/yihui/bookdown/figures.html).
+
+---
+# Diferenças PDF/HTML
+
+### Identação
+
+Em PDF usa-se o código LaTeX `\indent`.
+
+O HTML não entende alguns códigos de LaTeX, nesse caso um espaço é inserido por `&ensp;`.
+
+### Justificação
+
+Documentos gerados em PDF já justificam automaticamente.
+
+O HTML precisa do código abaixo inserido em qualquer parte do corpo:
+
+```{r, eval=FALSE}
+<style>
+body{
+text-align: justify
+}
+</style>
+```
+
+---
+class: inverse, center, middle
+
+# Funções do HTML
+
+### Interatividade, Widgets e Shiny
+
+---
+# Sumário
+
+Em HTML existem possibilidades adicionais:
+  
+  - `toc_floating: true` para um sumário fixado à esquerda;
+  
+  - `toc_collapsed: true` para aninhar os subitens, mostrando quando chegar na seção.
+
+--
+
+Naturalmente, estas opções devem estar sob o tipo de documento no YAML:
+
+```{r, eval=FALSE}
+output:
+  html_document: 
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float: true
+    toc_collapsed: false
+```
+
+  
+---
+
+# Tabsets (abas)
+
+Usando `{.tabset}` ao lado do nome de uma seção, da forma:
+
+    # Título da seção do Tabset{.tabset .tabset-pills}
+
+    ## Primeira visualização
+    chunk de código e/ou texto aqui
+
+    ## Segunda visualização
+    chunk de código e/ou texto aqui
+Faz com que todas as suas subseções virem abas que podem ser navegadas.
+
+```{r, echo=FALSE, fig.align='center', out.height=200}
+knitr::include_graphics("https://bookdown.org/yihui/rmarkdown/images/tabset.png")
+```
+
+A opção `tabset-pills` dá um visual diferente. [Mais detalhes](https://bookdown.org/yihui/rmarkdown/html-document.html#tabbed-sections).
 
 ---
 # Widgets HTML
 
-Os Widgets HTML sáo implementados no R pelo pacote `htmlwidgets`.
+Os Widgets HTML são implementados no R pelo pacote `htmlwidgets`.
 
 O pacote usa JavaScript para criar gráficos e tabelas interativas.
 
@@ -573,7 +842,7 @@ Pacotes resultantes desta interface são:
 
   - `DT`: Cria tabelas interativas com filtros e paginação;
   
-  - `plotly`: Gráficos interativos a partr do `ggplot2`;
+  - `plotly`: Gráficos interativos a partir do `ggplot2`;
   
   - `leaflet`: Mapas dinâmicos; 
 
@@ -587,7 +856,7 @@ Mais pacotes de Widgets HTML podem ser encontrados [aqui](https://www.htmlwidget
 ---
 # Widgets HTML - `DT`
 
-Para inserir data frames como WIdget HTML basta inserir:
+Para inserir data frames como Widget HTML basta inserir:
 
 ```{r, warning=FALSE}
 library(DT)
@@ -656,7 +925,7 @@ ggplotly(g)
 Mais sobre gráficos com `plotly` pode ser encontrado [aqui](https://plot.ly/r/).
 
 ---
-# Widgets HTML- `plotly`
+# Widgets HTML - `plotly`
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 library(plotly)
@@ -687,7 +956,7 @@ renderPlot({
 })
 ```
 
-Mais informações em Shiny podems er encotnradas [aqui](https://shiny.rstudio.com/tutorial/).
+Mais informações em Shiny podem ser encontradas [aqui](https://shiny.rstudio.com/tutorial/).
 
 ---
 # Documentos Shiny
