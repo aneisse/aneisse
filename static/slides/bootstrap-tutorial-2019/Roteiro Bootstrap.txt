@@ -1,0 +1,18 @@
+Introdução e o que é
+	Método de mensuração de imprecisão
+	Quem propós e quando
+	Toda a situação de descrença e depois adoção
+purrr e future e seus usos
+	O que é o purrr
+	O que é o future
+	O pacote furrr
+	Usos
+bootstrap não-paramétrico
+	Intro e Usabilidade
+	Implementando
+bootstrap paramétrico
+	Intro e Usabilidade
+	Implementando
+bootstrap 0.632
+	Intro e Usabilidade
+	Implementando

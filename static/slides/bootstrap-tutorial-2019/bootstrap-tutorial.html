@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Bootstrap</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Anderson Neisse" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Bootstrap
+## Principais Métodos e Implementações
+### Anderson Neisse
+### Slides em: bit.ly/2DpELlX
+
+---
+
+
+
+
+# O que é? 
+
+.pull-left[
+- Introduzido por [Efron (1979)](https://link.springer.com/chapter/10.1007/978-1-4612-4380-9_41);
+
+- Estima variabilidade de estatísticas;
+
+- Baseada no Jackknife;
+  
+- Permite estimar:
+
+  - Distribuição empírica;
+  
+  - Erro padrão;
+  
+  - Intervalo de confiança;
+]
+
+.pull-right[
+![image](http://www.lemen.com/dict/N_Bootstraps00094.jpg)
+]
+
+Vem de "**to pull one up by one's bootstraps**": processos auto-iniciados.
+
+---
+
+# Em resumo:
+
+A idéia base é simples:
+  
+  - Realizar `\(R\)` reamostragens com reposição nos dados;
+  
+  - Obter a estatística de interesse de cada reamostragem;
+
+--
+
+&lt;br&gt;
+Vantagens:
+
+  - Método simples para qualquer complexidade;
+  
+  - Aplicação geral, permitindo comparação de métodos diferentes.
+
+--
+
+&lt;br&gt;
+Desvantagens:
+
+  - Não fornece garantias a amostras finitas;
+  
+  - A aparente simplicidade pode esconder pressuposições importantes (Ex.: independência das amostras).
+
+---
+### Pacotes utilizados
+
+
+```r
+library(tidyverse)
+```
+
+Introduz vários pacotes como:
+
+  - `ggplot2`: Para visualização de dados;
+  
+  - `dplyr`: para manuseio de dados, traz o operador `%&gt;%` (pipe);
+
+  - `purrr`: Facilita programação, principalmente com a família `map` de funções.
+
+---
+### Dados utilizados
+
+Vamos utilizar os dados do Titanic, com algumas das variáveis:
+
+
+```r
+titanic &lt;- titanic::titanic_train %&gt;% 
+  select(Survived, Sex, Age, SibSp, Parch) %&gt;% 
+  drop_na()
+```
+
+Por conveniência foram selecionadas somente algumas variáveis e removidas linhas com `NA`.
+
+--
+
+Os dados indicam se determinado passageiro sobreviveu (`Survived = 1`) ou não ao desastre:
+
+
+```r
+head(titanic, 5)
+```
+
+```
+##   Survived    Sex Age SibSp Parch
+## 1        0   male  22     1     0
+## 2        1 female  38     1     0
+## 3        1 female  26     0     0
+## 4        1 female  35     1     0
+## 5        0   male  35     0     0
+```
+
+---
+### Modelo utilizado
+
+
+```
+## 
+## Call:
+## glm(formula = Survived ~ ., family = binomial, data = titanic)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8845  -0.7241  -0.6119   0.7316   2.1316  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  1.678704   0.281479   5.964 2.46e-09 ***
+## Sexmale     -2.572022   0.197214 -13.042  &lt; 2e-16 ***
+## Age         -0.011123   0.006739  -1.651   0.0988 .  
+## SibSp       -0.275868   0.116238  -2.373   0.0176 *  
+## Parch       -0.066432   0.115872  -0.573   0.5664    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 964.52  on 713  degrees of freedom
+## Residual deviance: 741.96  on 709  degrees of freedom
+## AIC: 751.96
+## 
+## Number of Fisher Scoring iterations: 4
+```
+
+
+---
+class: inverse, center, middle
+
+# Bootstrap Não-Paramétrico
+
+### Caso mais simples
+
+---
+
+## O método
+
+É o método que introduziu o Bootstrap, o mais conhecido pela simplicidade.
+
+A reamostragem é feita nas linhas (casos), com reposição.
+
+[Efron (1988)](https://psycnet.apa.org/fulltext/1989-00163-001.pdf) mostra a proximidade com a inferência paramétrica.
+
+## Implementação
+
+Podemos implementar funcionalmente, de forma a entender melhor o processo.
+
+Será seguida a seguinte abordagem:
+
+  - Definição da função que uma realização do bootstrap;
+  
+  - Geração de `\(R\)` vetores de índices reamostrados;
+  
+  - Aplicação da função e obtenção da distribuição.
+
+---
+
+# Função Bootstrap Não-Paramétrico
+
+A função que recebe um índice e os dados e retorna medidas de interesse:
+
+
+```r
+# Função que realiza uma amostragem de bootstrap
+boot_npr &lt;- function(ind, df){
+  
+  # Ajusta modelo aos dados reamostrados
+  m &lt;- glm(Survived ~ ., family = binomial, data = df[ind, ])
+  
+  # Obtem coeficientes
+  c &lt;- coef(m)
+  d &lt;- data.frame(t(c))
+  
+  # Retorna o resultado
+  return(d)
+}
+```
+
+Neste caso as medidas de interesse são os coeficientes.
+
+---
+# Realização das reamostragens
+
+Primeiro vamos definir uma lista com os `\(R = 10.000\)` vetores de índices:
+
+
+```r
+# Obtendo lista de vetores de índice para 10.000 bootstraps
+indices &lt;- map(.x = 1:10000, 
+               ~sample(x = 1:nrow(titanic), 
+                       size = nrow(titanic), 
+                       replace = T))
+```
+
+A função `purrr::map` é uma forma melhorada de realizar loops. A `map` retorna uma lista de resultados.
+
+--
+
+E então podemos aplicar a função `boot_npr` a cada índice:
+
+
+```r
+# Obtendo amostra bootstrap
+amostra &lt;- map_dfr(.x = indices, 
+                   .f = ~boot_npr(ind = .x, 
+                                  df = titanic))
+```
+
+Observe que `map_dfr` retorna um `data.frame` com os resultados. Mais sobre o purrr [aqui](https://purrr.tidyverse.org/).
+
+---
+# Obtendo Intervalos de Confiança
+
+De forma a facilitar manuseio com `tidyverse`, vamos *alongar* os dados:
+
+
+```r
+# Criando formato longo de dados
+df_npr &lt;- amostra %&gt;% 
+  select(-X.Intercept.) %&gt;% 
+  gather(key = "Var", value = "Coef")
+```
+
+E então obter os intervalos de confiança por percentis:
+
+
+```r
+# Criando intervalos de confiança
+df_npr_ci &lt;- df_npr %&gt;% 
+  group_by(Var) %&gt;% 
+  summarise(LInf = quantile(Coef, 0.025), 
+            Est = mean(Coef), 
+            LSup = quantile(Coef, 0.975))
+```
+
+
+---
+### Resultados - Bootstrap Não-Paramétrico
+
+
+```r
+ggplot(df_npr, aes(x = Var, y = exp(Coef))) + 
+  geom_violin(aes(fill = Var, color = Var)) + 
+  geom_pointrange(aes(ymin = exp(LInf), y = exp(Est), ymax = exp(LSup)), data = df_npr_ci) + 
+  geom_hline(yintercept = 1) + coord_flip() +
+  guides(fill = FALSE, color = FALSE) + facet_wrap(~Var, scales = "free") + 
+  theme_bw() + labs(x = NULL, y = NULL)
+```
+
+&lt;img src="bootstrap-tutorial_files/figure-html/unnamed-chunk-10-1.png" width="800" height="360" /&gt;
+
+
+---
+class: inverse, center, middle
+
+# Bootstrap Paramétrico
+
+### Ou reamostragem de resíduos
+
+---
+## O que é?
+
+Consiste em:
+
+  - Ajustar modelo aos dados;
+  
+  - Amostrar dados com a mesma distribuição do modelo;
+  
+  - Calcular a estatística de interesse na amostra.
+  
+É equivalente amostrar do resíduo da distribuição e somar aos valores preditos.
+
+--
+&lt;br&gt;
+
+Similar ao método de **Monte Carlo**, mas usando parâmetros estimados.
+
+Técnica possibilita usode Bootstrap em dados experimentais.
+
+--
+
+### Implementação
+
+Podemos alterar alguns detalhes na função `boot_npr`, criando a `bot_prm`.
+
+---
+# Função Bootstrap Paramétrico
+
+A função paramétrica usa os parãmetros estimados ao invés de índices:
+
+
+```r
+# Função que realiza uma amostragem de bootstrap PRM
+boot_prm &lt;- function(mod_obj, df){
+  
+  # Reamostrando parametricamente
+  y_pred &lt;- predict(mod_obj, df, type = "response")
+  df$Survived &lt;- map_dbl(.x = y_pred, ~rbinom(1, 1, .x))
+
+  # Ajusta modelo aos dados reamostrados
+  m &lt;- glm(Survived ~ ., family = binomial, data = df)
+  
+  # Obtem coeficientes
+  c &lt;- coef(m)
+  d &lt;- data.frame(t(c))
+  
+  # Retorna o resultado
+  return(d)
+}
+```
+
+Além disso, é adicionado código que realiza a amsotragem da distribuição.
+
+---
+# Realização das reamostragens
+
+Neste caso não precisamos gerar índices, mas sim o objeto de ajuste do modelo:
+
+
+```r
+# Obtendo modelo inicial para o Bootstrap PRM
+modelo &lt;- glm(Survived ~ ., family = binomial, data = titanic)
+```
+
+--
+
+E então podemos aplicar a função `boot_prm` ao modelo:
+
+
+```r
+# Obtendo amostra bootstrap
+amostra &lt;- map_dfr(.x = 1:10000, 
+                   .f = ~boot_prm(mod_obj = modelo, 
+                                  df = titanic))
+```
+
+Lembrando que `map_dfr` retorna um `data.frame` com os resultados.
+
+---
+# Obtendo Intervalos de Confiança
+
+Obter agora os dados alongados e intervalos de confiança:
+
+
+```r
+# Criando formato longo de dados
+df_prm &lt;- amostra %&gt;% 
+  select(-X.Intercept.) %&gt;% 
+  gather(key = "Var", value = "Coef")
+
+# Criando intervalos de confiança
+df_prm_ci &lt;- df_prm %&gt;% 
+  group_by(Var) %&gt;% 
+  summarise(LInf = quantile(Coef, 0.025), 
+            Est = mean(Coef), 
+            LSup = quantile(Coef, 0.975))
+```
+
+Agora vamos unir os dois métodos para comparação
+
+
+```r
+# Unindo os dois métodos
+df_npr$Metodo &lt;- "NPR"; df_prm$Metodo &lt;- "PRM";
+df_tot &lt;- rbind(df_npr, df_prm)
+
+df_npr_ci$Metodo &lt;- "NPR"; df_prm_ci$Metodo &lt;- "PRM";
+df_tot_ci &lt;- rbind(df_npr_ci, df_prm_ci)
+```
+
+
+---
+### Resultados - Bootstrap Paramétrico
+
+
+```r
+ggplot(df_tot, aes(x = Var, y = Coef)) + 
+  geom_violin(aes(fill = Metodo, color = Metodo)) + 
+  geom_pointrange(aes(ymin = LInf, y = Est, ymax = LSup, group = Metodo), data = df_tot_ci, position = position_dodge(0.9)) +
+  geom_hline(yintercept = 0) + coord_flip() +
+  facet_wrap(~Var, scales = "free") +
+  theme_bw() + labs(x = NULL, y = NULL)
+```
+
+&lt;img src="bootstrap-tutorial_files/figure-html/unnamed-chunk-16-1.png" width="800" height="360" /&gt;
+
+---
+class: inverse, center, middle
+
+# Bootstrap 632
+
+### A abordagem para validação-cruzada
+
+---
+
+# Validação Cruzada
+
+Método muito utilizado para **seleção de modelos** estatísticos e de machine learning.
+
+Famoso por sua aplicação geral em controle de *overfitting*.
+
+Métodos mais reconhecidos são:
+
+  - Grupos Treinamento/Teste
+  
+  - Leave-one-out;
+  
+  - **k-fold**.
+  
+--
+
+&lt;br&gt;
+Mas para **avaliação de modelos**, [Vanwinckelen e Blockeel (2012)](https://core.ac.uk/download/pdf/34528641.pdf) mostram que o k-fold apresenta viés pessimista por utilizar um tamanho menor de amostra.
+
+O método de Bootstrap 632 trata deste problema.
+
+---
+# Bootstrap 632
+
+Proposto por [Efron e Tibshirani (1997)](https://www.tandfonline.com/doi/pdf/10.1080/01621459.1997.10474007?casa_token=qSEkY0XvVtMAAAAA:yr3I40lNzJkqDJCmXutMW0dm6FCbD9RD0bv_7FSsQtCOdXtaqQcgxQKjebi_HnIMb_fwJr-rRuhkoA) como uma melhoria na validação cruzada.
+
+É fácil verificar que em uma amostra de bootstrap não-paramétrico:
+$$
+\left( 1 - \frac{1}{n} \right)^n \approx e^{-1} = 0.368
+$$
+
+é a proporção de casos não escolhidos.
+
+--
+
+&lt;br&gt;
+
+O método consiste em:
+
+  - Ajustar o modelo à amostra `\(n\)` dos `\(0.632\)` casos;
+  
+  - Medir a performance nos `\(0.368\)` casos restantes.
+
+&lt;br&gt;
+  
+Entretanto esta abordagem precisa de uma correção.
+
+---
+# Bootstrap 632
+
+Sabemos que a função perda `\(E\)`, quando avaliada:
+
+  - Nos de teste é pessimista: O treinamento é `\(n\)`, mas contém somente `\(0.632\)` dos casos;
+  
+  - Nos de treinamento é otimista: Pois está predizendo dados dos quais aprendeu.
+  
+  - Em ambos possui maior variabilidade.
+
+--
+
+A proposta é combinar os dois:
+
+&lt;br&gt;
+
+`$$E = 0.632 \times E_{teste} + 0.368 \times E_{treinamento}$$`
+&lt;br&gt;
+
+Então a distribuição empírica obtida é a de `\(E\)`.
+
+Os demais procedimentos são os do bootstrap não paramétrico.
+
+---
+# Implementação
+
+Perceba que podemos fazer somente uma alteração na função `boot_npr`.
+
+Inclusive podemos realizar ambos simultaneamente, não-paramétrico e 632.
+
+--
+
+&lt;br&gt;
+
+Basta que alteremos a função que realiza uma reamsotragem de bootstrap para:
+
+  - Também avaliar a função perda no treinamento e teste;
+  
+  - Fazer a correção criando `\(E\)`;
+  
+  - Retornar juntamente com os dados dos parâmetros.
+
+&lt;br&gt; 
+
+Vamos criar a função `boot_632` para Acurácia no nosso `glm`, **usando limite decisórios de `\(0.5\)`**. 
+
+Mas vamos comparar `\(E\)`, `\(E_{treino}\)` e `\(E_{teste}\)`, deixando os coeficientes de lado.
+
+
+---
+### Função `boot_632`
+
+
+```r
+boot_632 &lt;- function(ind, df){
+  # Ajusta modelo aos dados reamostrados
+  m &lt;- glm(Survived ~ ., family = binomial, data = df[ind, ])
+  
+  #Avalia o acurácia no treinament
+  prob_trn &lt;- predict(m, df[ind, ], type = "response")
+  pred_trn &lt;- ifelse(prob_trn &gt; 0.5, 1, 0)
+  acc_trn &lt;- mean(df[ind, ]$Survived == pred_trn)
+
+  # Avalia acurácia no teste
+  prob_tst &lt;- predict(m, df[-ind, ], type = "response")
+  pred_tst &lt;- ifelse(prob_tst &gt; 0.5, 1, 0)
+  acc_tst &lt;- mean(df[-ind, ]$Survived == pred_tst)
+
+
+  # Combina os dois
+  acc &lt;- 0.632*acc_tst + 0.368*acc_trn
+  
+  # Retorna o resultado
+  res &lt;- tibble(Treino = acc_trn, 
+                Teste = acc_tst, 
+                Corrigido = acc)
+  return(res)
+}
+```
+
+---
+### Demais função iguais às do não-paramétrico
+
+
+```r
+# Obtendo 10.000 bootstraps 632
+indices &lt;- map(.x = 1:10000, 
+               ~sample(x = 1:nrow(titanic), 
+                       size = nrow(titanic), 
+                       replace = T))
+amostra &lt;- map_dfr(.x = indices, 
+                   .f = ~boot_632(ind = .x, 
+                                  df = titanic))
+
+# Criando formato longo de dados
+dados_632 &lt;- amostra %&gt;% 
+  #select(-X.Intercept.) %&gt;% 
+  gather(key = "Var", value = "Coef")
+
+# Criando intervalos de confiança
+dados_632_ci &lt;- dados_632 %&gt;% 
+  group_by(Var) %&gt;% 
+  summarise(LInf = quantile(Coef, 0.025), 
+            Est = mean(Coef), 
+            LSup = quantile(Coef, 0.975))
+```
+
+---
+
+
+```r
+# Criando gráfico
+ggplot(dados_632, aes(x = Var, y = Coef)) + 
+  geom_violin(aes(fill = Var)) + 
+  geom_pointrange(aes(ymin = LInf, 
+                      y = Est, 
+                      ymax = LSup), 
+                  data = dados_632_ci) + 
+  guides(fill = FALSE) + theme_bw() + 
+  labs(x = NULL, y = NULL)
+```
+
+&lt;img src="bootstrap-tutorial_files/figure-html/unnamed-chunk-20-1.png" width="800" height="360" /&gt;
+
+---
+# Melhorias Computacionais
+
+Uma opção para agilizar ainda mais a computação do que com `purrr::map_*`.
+
+O pacote `furrr` introduz a família `future_map_*`, que:
+
+  - Mistura o pacotes `purrr` e `future`;
+  
+  - Permite distribuir processamento em diferentes sessões de R.
+  
+### Uso do pacote
+
+O uso é simples, basta carregar o `furrr`, então usar:
+
+
+```r
+plan(multisession)
+```
+
+Para planejar sessões mútiplas, então utilizar `future_map_*`.
+
+---
+class: left
+
+# Referências
+
+- Witten, I. H., Frank, E., Hall, M. A., &amp; Pal, C. J. (2016). **Data Mining: Practical machine learning tools and techniques**. Morgan Kaufmann. [Amostra](https://books.google.com.br/books?hl=pt-PT&amp;lr=&amp;id=1SylCgAAQBAJ&amp;oi=fnd&amp;pg=PP1&amp;dq=witten+data+mining&amp;ots=8IENxinDud&amp;sig=Xuw9Wj39r2Tbrho3pr9hwcBzIDA&amp;redir_esc=y#v=onepage&amp;q=witten%20data%20mining&amp;f=false)
+
+- Efron, B. (1992). Bootstrap methods: another look at the jackknife. **Breakthroughs in statistics** (pp. 569-593). Springer, New York, NY. [Online](https://link.springer.com/chapter/10.1007/978-1-4612-4380-9_41)
+
+- Efron, B., &amp; Tibshirani, R. (1997). Improvements on cross-validation: the 632+ bootstrap method. **Journal of the American Statistical Association**, 92(438), 548-560. [Acesso Aberto](https://www.tandfonline.com/doi/pdf/10.1080/01621459.1997.10474007?casa_token=dCoFYF1uuUUAAAAA:36bxF5kFb1HKNhkiy86G6hKk8Y-v0wlC_AmuVM1NS7cVmEyzMd64WO6l-lD-RkUqka9JHZVpndbFYw)
+
+- Efron, B. (1988). Bootstrap confidence intervals: good or bad?. **Psychological bulletin**, 104(2), 293. [Acesso Aberto](https://psycnet.apa.org/fulltext/1989-00163-001.pdf)
+
+- Vanwinckelen, G., &amp; Blockeel, H. (2012, May). On estimating model accuracy with repeated cross-validation. **Proceedings of the 21st Belgian-Dutch Conference on Machine Learning** (pp. 39-44). [Acesso Aberto](https://core.ac.uk/download/pdf/34528641.pdf)
+
+---
+### Exercício de fixação
+
+**Exercício 1**&lt;br&gt;
+Utilize os dados `mtcar` do R base e ajuste modelos lineares para predizer milhas por galão (`mpg`). Ajuste o modelo com as variáveis independentes `hp`, `wt` e `cyl`. 
+
+**Exercício 2** &lt;br&gt;
+Implemente o bootstraps paramétrico, reamostrando dos resíduos e não-paramétrico. Compare os resultados, e tente justificar possíveis diferenças.
+
+**Exercício 3**&lt;br&gt;
+Implemente o Bootstrap 632 para o modelo do exercício 1. Utilize os EQMs de teste, de treinamento e corrigido como medida de performance e compare
+
+**Exercício 4**&lt;br&gt;
+Implemente o Bootstrap 632 para o modelo do exercício 1 e para o modelo com todas as variáveis. Utilize o EQM corrigido como medida de performance e compare os dois modelos. Qual dos modelos é melhor?
+
+**Obs.**: De maneira a praticar, o relatório deverá ser feito em R Markdown, podendo serm em HTML ou PDF.
+
+---
+
+class: center, middle
+
+# Obrigado!
+
+
+
+Apresentação criada com o pacote [**xaringan**](https://github.com/yihui/xaringan).
+
+[aneisse.com](https://aneisse.com/)
+
+Twitter: [@a_neisse](https://twitter.com/a_neisse)
+
+LinkedIn: [anderson-neisse](https://www.linkedin.com/in/anderson-neisse/)
+
+Código da apresentação no [Github](https://github.com/aneisse/tutorial-rmarkdown)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

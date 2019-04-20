@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "23 de Fevereiro de 2019<br><br>Slides em: bit.ly/2SWK467"
+date: "Slides em:   bit.ly/2ZqczbW"
 bibliography: referencias.bib
 output:
   xaringan::moon_reader:
@@ -934,13 +934,18 @@ ggplotly(g)
 
 ---
 
-# Documentos Shiny
+## Documentos Shiny
 
 Shiny é uma biblioteca focada em criar dashboards interativos.
 
-Roda aplicativo em background, que recebe as solicitações do usuário e renderiza.
-
 ```{r, eval=FALSE}
+---
+title: "Um Documento com Shiny"
+output:
+  html_document: default
+runtime: shiny
+---
+# Código abaixo isnerido em chunks
 selectInput(
   'breaks', label = 'Number of bins:',
   choices = c(10, 20, 35, 50), selected = 20
@@ -956,14 +961,14 @@ renderPlot({
 })
 ```
 
-Mais informações em Shiny podem ser encontradas [aqui](https://shiny.rstudio.com/tutorial/).
+Mais informações em [Shiny](https://shiny.rstudio.com/tutorial/) e também [Shiny com R markdown](https://bookdown.org/yihui/rmarkdown/shiny-documents.html). 
 
 ---
 # Documentos Shiny
 
 O exemplo do slide anterior gera:
 
-```{r, echo=FALSE, fig.align='center', out.height=425, out.width=425}
+```{r, echo=FALSE, fig.align='center', out.height=425, out.width=500}
 knitr::include_graphics("shiny.png")
 ```
 
@@ -971,6 +976,70 @@ knitr::include_graphics("shiny.png")
 
 
 Com conexão à internet, podemos ver exemplos [na prática](https://shiny.rstudio.com/gallery/movie-explorer.html).
+
+---
+class: inverse, center, middle
+
+# Apresentações em R markdown
+
+## Xaringan e alternativas
+
+---
+
+# Apresentações
+
+Para documentos em geral, as unidades são as seções.
+
+Em apresentações elas se tornam os slides. Os formatatos disponíveis são:
+
+  - [IO Slides](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html): Em HTML, definindo `output: ioslides_presentation`;
+  
+  - [Slidy](https://bookdown.org/yihui/rmarkdown/slidy-presentation.html): Também em HTML usando `output: slidy_presentation`;
+  
+  - [Beamer](https://bookdown.org/yihui/rmarkdown/beamer-presentation.html): Em PDF com `output: beamer_presentation`;
+  
+  - [PowerPoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html): Com `output: powerpoint_presentation` no YAML. 
+  
+--
+<br>,
+
+O pacote `xaringan` introduz uma opção que usa [remark.js](https://remarkjs.com), uma biblioteca de JavaScript. 
+
+A criação da apresentação é feita por: `New R Markdown -> From Template -> Presentation Ninja`.
+
+Que cria um arquivo com uma apresentação pré-digitada pela autora, apresentando e dando um tutorial . [Mais informações](https://bookdown.org/yihui/rmarkdown/xaringan.html).
+
+---
+class: inverse, center, middle
+
+# Websites em R markdown
+
+### Blogdown e Ferramentas necessárias
+
+---
+## Websites em R Markdown
+
+O pacote `bookdown` introduz a criação de sites usando R markdown.
+
+O [livro do pacote](https://bookdown.org/yihui/blogdown/) propõe diversas formas. O sugerido é usar o `blogdown` em conjunto com o [GitHub](https://github.com/) e o [Netlify](https://www.netlify.com/). Basicamente:
+
+  - Escolher o [tema Hugo](https://themes.gohugo.io/) e obter o repositório do GitHub "autor/repositorio";
+  
+  - Criar projeto `Website using blogdown` fornecendo "autor/repositorio";
+  
+  - Alterar e ver resultados "aovivo" com `Addins -> Serve site`;
+  
+  - Fazer upload do seu site para um repositório do GitHub;
+  
+  - Fazer o deploy do site pelo Netlify.
+
+--
+<br>
+O GitHub permite criar versões de testes e o Netlify permite testar estas versões.
+
+Um [tutorial completo](https://gohugo.io/hosting-and-deployment/hosting-on-netlify/) utilizando esta abordagem.
+
+O Netlify gera um link aleatório, mas permite inserção de domínios comprados.
 
 ---
 
