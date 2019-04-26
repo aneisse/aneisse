@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "Slides em:   bit.ly/2ZqczbW"
+date: "Slides em: bit.ly/2ZqczbW"
 bibliography: referencias.bib
 output:
   xaringan::moon_reader:
@@ -17,6 +17,21 @@ output:
 options(htmltools.dir.version = FALSE)
 library(tidyverse)
 ```
+
+# Pacotes necessários
+
+Basta rodar este código em algum script do R:
+
+```{r, eval=FALSE}
+# Pacotes necessários para o curso
+pacotes <- c("tidyverse", "rmarkdown", "blogdown", 
+             "bookdown", "tufte", "rticles", "htmlwidgets", 
+             "DT", "plotly", "leaflet", "xaringan")
+
+install.packages(pacotes)
+```
+
+---
 
 # O que é? 
 
@@ -33,7 +48,7 @@ library(tidyverse)
 
   - Documentos interativos;
   
-  - Sites HTML(`blogdown`);
+  - Sites (`blogdown`);
   
   - Dashboards (`shiny`);
   
@@ -631,7 +646,7 @@ Também podemos usar `knitr::include_graphics("caminho ou link")` para inserir f
 
 Também existem opções de imagens dentro de `{r}`, como:
 
-  - `out.height` e `out.width`: Ajusta dimensões da imagem no relatório.
+  - `out.height` e `out.width` ou `fig.dim = c(h, w)`: Ajusta dimensões da imagem no relatório.
   
   - `fig.align`: Ajusta alinhamento direito, esquero, centralizado;
 
@@ -657,7 +672,7 @@ Pode ser inseridos códigos de outras linguagens como:
   
   - SQL: {sql}, precisa de conexão com o BD;
   
-  - JavaScript: {sql}, ajuda a formatar documentos HTML;
+  - JavaScript: {js}, ajuda a formatar documentos HTML;
   
   - [E outras](https://bookdown.org/yihui/rmarkdown/language-engines.html#javascript-and-css).
 
@@ -755,6 +770,30 @@ Podemos criar numeração automática da forma:
 Definirmos uma label para o chunk `{r label}`, então podemos referenciar no texto como `\@ref(tab:label)` ou `\@ref(fig:label)`. [Mais detalhes](https://bookdown.org/yihui/bookdown/figures.html).
 
 ---
+# Formatos de Artigo
+
+O R Markdown permite criar facilmente relatórios.
+
+Detalhes específicos de cada revista são mais difíceis de se realizar.
+
+Muitas revistas disponibilizam formato de artigos em Rmd.
+
+--
+
+<br>
+
+Alguns exemplos:
+
+  - UFPB: [Elaboração de TCC em R Markdown](https://repositorio.ufpb.br/jspui/bitstream/tede/9034/2/arquivototal.pdf)
+  
+  - Royal Society of Statistics (`rticles`)
+  
+  - [Journal of Statistical Software](https://rmarkdown.rstudio.com/formats.html)
+  
+
+Muitos formatos são distribuídos pelo pacote `rticles`.
+
+---
 # Diferenças PDF/HTML
 
 ### Identação
@@ -807,7 +846,29 @@ output:
     toc_collapsed: false
 ```
 
+---
+
+# Code-folding
   
+Em HTML é possível permitir oferecer a opção de exibir o código.
+
+Pode ser útil para quando se quer enviar relatórios com código aberto.
+
+Introduz um "botão" para mostrar/esconder o código.
+
+--
+<br>
+
+Basta inserir:
+
+```{r, eval=FALSE}
+output:
+  html_document: 
+    code_folding: hide
+```
+
+para gerar o documento com os ódigos escondidos por padrão. A opção é `code_folding: show`.
+
 ---
 
 # Tabsets (abas)
@@ -948,16 +1009,14 @@ runtime: shiny
 # Código abaixo isnerido em chunks
 selectInput(
   'breaks', label = 'Number of bins:',
-  choices = c(10, 20, 35, 50), selected = 20
-)
+  choices = c(10, 20, 35, 50), selected = 20)
 
 renderPlot({
   par(mar = c(4, 4, .1, .5))
   hist(
     faithful$eruptions, as.numeric(input$breaks),
     col = 'gray', border = 'white',
-    xlab = 'Duration (minutes)', main = ''
-  )
+    xlab = 'Duration (minutes)', main = '')
 })
 ```
 
