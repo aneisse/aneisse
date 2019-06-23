@@ -3,7 +3,7 @@ title: "Reamostragem Bootstrap"
 subtitle: "Introdução, variações e implementação com processamento paralelo"
 author: "Anderson Cristiano Neisse (UFV)<br>"
 institute: "**Orientador**: Fernando Luiz Pereira de Oliveira (UFOP) <br> **Coorientador**: Anderson Castro Soares de Oliveira (UFMT) <br> **Coorientador**: Frederico Rodrigues Borges da Cruz (UFMG)<br>"
-date: "Slides em: [bit.ly/2DpELlX](bit.ly/2DpELlX)"
+date: "Slides em: [bit.ly/2Lcrdi8](https://bit.ly/2Lcrdi8)"
 output:
   xaringan::moon_reader:
     css: [xaringan-themer.css]
@@ -1299,7 +1299,7 @@ class: center, middle
 
 # Obrigado!
 
-Apresentação em: LINK AQUI
+Apresentação em: [bit.ly/2Lcrdi8](https://bit.ly/2Lcrdi8)
 
 # Perguntas!
 
