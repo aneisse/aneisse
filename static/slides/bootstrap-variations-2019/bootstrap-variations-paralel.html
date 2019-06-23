@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Reamostragem Bootstrap</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Anderson Cristiano Neisse (UFV)" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: bottom, left, inverse, title-slide
+
+# Reamostragem Bootstrap
+## Introdução, variações e implementação com processamento paralelo
+### Anderson Cristiano Neisse (UFV)<br>
+### <strong>Orientador</strong>: Fernando Luiz Pereira de Oliveira (UFOP) <br> <strong>Coorientador</strong>: Anderson Castro Soares de Oliveira (UFMT) <br> <strong>Coorientador</strong>: Frederico Rodrigues Borges da Cruz (UFMG)<br>
+### Slides em: <a href="bit.ly/2DpELlX">bit.ly/2DpELlX</a>
+
+---
+
+
+
+
+# O que é? 
+
+.pull-left[
+- Introduzido por [Efron (1979)](https://link.springer.com/chapter/10.1007/978-1-4612-4380-9_41);
+
+- Estima variabilidade de estatísticas;
+
+- Generaliza o Jackknife;
+
+- Permite estimar:
+
+  - Distribuição empírica;
+  
+  - Erro padrão;
+  
+  - Intervalo de confiança;
+]
+
+--
+
+.pull-right[
+![image](images/Bootstraps.jpg)
+]
+
+Vem de "**to pull one up by one's bootstraps**": processos auto-iniciados.
+
+Referência ao [Paradoxo de Bootstrap](https://pt.wikipedia.org/wiki/Paradoxo_de_bootstrap).
+---
+
+# O que é?
+
+Considere uma amostra `\(\mathbf{S} = S_1, S_2, ..., S_n\)` em que `\(S_i = (x_i, y_i)\)`. 
+
+Além disso, uma estatística `\(T(\mathbf{S}) = T(S_1, S_2, ..., S_n)\)` de interesse.
+
+--
+
+&lt;br&gt;
+
+Uma reamostragem de bootstrap é obtida:
+
+  - Amostrando `\(n\)` observações de `\(\mathbf{S}\)`;
+  
+  - Com reposição.
+  
+o que resulta em `\(\mathbf{S}^* = S^*_1, S^*_2, ..., S^*_n\)`.
+
+
+Então podemos obter a estimativa `\(T(\mathbf{S}^*) = T(S_1^*, S_2^*, ..., S_n^*)\)`.
+
+--
+
+&lt;br&gt;
+
+Ao realizar este procedimento `\(B\)` vezes obtemos a **distribuição Bootstrap**:
+
+  - `\(\mathbf{T}_{B} = T(\mathbf{S}^*_1), T(\mathbf{S}^*_2), ..., T(\mathbf{S}^*_B)\)`
+
+---
+
+# O que é?
+
+Se tivermos uma amostra `\(n = 50\)` da  distribuição `\(Exp(\lambda = 1)\)`:
+
+&lt;img src="images/LucidchartPT.png" width="3379" /&gt;
+
+---
+
+# Em resumo:
+
+A idéia base é simples:
+  
+  - Realizar `\(B\)` reamostragens com reposição nos dados;
+  
+  - Obter a estatística de interesse `\(T(\mathbf{S}^*_j)\)` de cada reamostragem `\(j\)`;
+  
+  - Utilizar a distribuição Bootstrap `\(\mathbf{T}_B\)` para mensurar variabilidade.
+
+--
+
+# Variações:
+
+Diferentes variações do Bootstrap foram propostas.
+
+Cada variação permite diferentes aplicações.
+
+Cada variação **altera a forma de reamostragem**.
+
+  - Contanto que se **mantenha a reposição**.
+
+
+---
+class: inverse, center, middle
+
+# Exemplo
+
+### Modelando dados de carros
+
+---
+
+# Exemplo
+
+Banco de dados `mtcars` do R, que contém 11 variáveis de carros:
+
+
+```r
+head(mtcars, 3)
+```
+
+```
+##                mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4     21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710    22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+```
+
+--
+
+Avaliaremos o modelo linear:
+
+
+```r
+modelo &lt;- lm(mpg ~ hp + am + qsec, data = mtcars)
+summary(modelo)$coefficients
+```
+
+```
+##                Estimate  Std. Error    t value     Pr(&gt;|t|)
+## (Intercept) 16.63206916 11.16841513  1.4892059 0.1476115618
+## hp          -0.04912325  0.01342505 -3.6590752 0.0010398097
+## am           5.98311261  1.33812628  4.4712616 0.0001174983
+## qsec         0.46130309  0.51338361  0.8985544 0.3765524637
+```
+
+
+---
+
+# Iterações no R
+
+No R, `B = 10000` repetições de um operação podem ser feitas:
+
+
+
+
+```r
+# Por um loop for
+resultado &lt;- vector("numeric", B)
+for(i in 1:B){
+  
+  media &lt;- mean(1:i)
+  
+  resultado[i] &lt;- 1
+}
+```
+
+--
+
+Utilizando a família `apply`:
+
+
+```r
+tira_media &lt;- function(x) return(mean(1:x))
+
+resultado &lt;- sapply(1:B, FUN = tira_media)
+```
+
+--
+
+Ou a família `purrr::map`:
+
+
+```r
+resultado &lt;- purrr::map_dbl(.x = 1:B, ~mean(1:.x))
+```
+
+---
+
+# Iterações no R
+
+Em questão de performance são similares:
+
+
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;&lt;table&gt;
+&lt;caption&gt;Média de tempo por método.&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; For &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Apply &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Map &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 0.48771 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.502423 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.509599 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+background-image: url(images/purrr.png)
+background-position: 95% 5%
+background-size: 200px 200px
+
+# Família map
+
+Introduzida pelo pacote `purrr`, oferece várias opções:
+
+  - Diferentes formatos de retorno: 
+    - Lista: `map`;
+
+    - Data frame: `map_dfr` e `map_dfc`;
+
+    - Vetor: `map_dbl`, `map_int`, `map_chr` e `map_lgl`.
+
+&lt;br&gt;
+
+  - Controle de aplicação: `map_if` e `map_at`.
+
+&lt;br&gt;
+
+  - Função com múltiplos argumentos: `map2` e `pmap`
+
+&lt;br&gt;
+
+Mais informações do `purrr` e documentação [aqui](https://purrr.tidyverse.org/index.html).
+
+---
+background-image: url(images/furrr.png)
+background-position: 95% 5%
+background-size: 200px 200px
+
+# Paralelização: pacote furrr
+
+Por padrão, o R usa **núcleo único** por sessão.
+
+Somente o uso de múltiplos núcleos já melhoraria o desempenho.
+
+--
+
+&lt;br&gt;
+
+O pacote furrr mistura:
+  - Família `map` do pacote `purrr`;
+  
+  - Capacidade de paralelização do pacote `future`.
+
+--
+
+&lt;br&gt;
+
+O pacote `furrr` simplifica o uso de `future` com a **família** **`future_map`**.
+
+&lt;br&gt;
+
+O `future` é mais geral e permite mais aplicações. Aprofundamento [aqui](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html).
+
+---
+background-image: url(images/furrr.png)
+background-position: 95% 5%
+background-size: 200px 200px
+
+# Paralelização: pacote furrr
+
+Na prática:
+  - Distribui sessões RScript entre núcleos do processador;
+
+  - Executa parcelas das iterações em cada sessão.
+
+--
+
+&lt;br&gt; 
+
+Melhor desempenho para iterações independentes. 
+
+&lt;br&gt;
+
+Necessidade de comunicação entre sessões fere a performance.
+
+&lt;br&gt;
+
+Mais sobre o `furrr` e documentação [aqui](https://github.com/DavisVaughan/furrr).
+
+Mais sobre iterações no R? [R for Data Science: Iteration](https://r4ds.had.co.nz/iteration.html).
+
+---
+class: inverse, center, middle
+
+# Bootstrap Não-paramétrico
+
+### A variação mais conhecida
+
+
+---
+
+# Bootstrap Não-paramétrico
+
+Reamostragem direta de `\(\mathbf{S} = S_1, S_2, ..., S_n\)` onde `\(S_i = (x_i, y_i)\)`.
+
+--
+
+No contexto de dados, linhas inteiras são reamostradas:
+
+&lt;img src="images/NP_Resampling.png" width="480" style="display: block; margin: auto;" /&gt;
+
+
+É o método mais utilizado pela simplicidade de aplicação.
+
+
+---
+
+# Bootstrap Não-paramétrico
+
+Agora no contexto do nosso exemplo, a função que realiza uma reamostragem é:
+
+
+```r
+boot_npr &lt;- function(df){
+  # Recriando o df
+  df_reamostra &lt;- sample_n(tbl = df, size = nrow(df), replace = T)
+  
+  # Ajustando modelo
+  m &lt;- lm(mpg ~ hp + am + qsec, data = df_reamostra)
+  
+  # Retornando coeficientes
+  coeficientes &lt;- t(coef(m)) %&gt;% as.data.frame()
+  return(coeficientes)
+}
+```
+
+E para gerar a distribuição bootstrap com `B = 10000`:
+
+
+
+
+```r
+plan(multisession) # Abrindo multi-sessões do R
+dist_npr &lt;- future_map_dfr(1:B, ~boot_npr(df = mtcars))
+```
+
+---
+
+# Bootstrap Não-paramétrico
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+
+# Bootstrap Não-paramétrico
+
+Vamos verificar os valores numéricos:
+
+&lt;br&gt;
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.63 [-6.25; 39.51] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.24; 8.72] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.59; 1.51] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.91 [-4.22; 46.42] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.71 [2.54; 8.32] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.03] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.36 [-0.93; 1.45] &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+&lt;br&gt;
+
+Bootstrap tem sempre amplitude maior:
+
+&lt;br&gt;
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45.75 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.48 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50.64 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.78 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.38 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: inverse, center, middle
+
+# Bootstrap Residual
+
+
+---
+
+# Bootstrap Residual
+
+Depende de uma regra de predição qualquer `\(y_i = f(x_i) + \varepsilon_i\)`.
+
+Considerado não-paramétrico pois:
+  - Não depende de distribuição;
+  - Permite qualquer regra de predição.
+
+--
+
+&lt;br&gt;
+
+A partir de `\(\mathbf{S}\)`, são obtidas(os): 
+  - Predições `\(f(x_i)\)`;
+  - Os resíduos `\(e_i = f(x_i) - y_i\)`.
+  
+A reamostragem `\(\mathbf{S}^*\)` é obtida por:
+  - Reamostrando de `\(e_1, ..., e_n\)` com reposição.
+  - Fazendo `\(S_i^* = (x_i, y^*_i)\)`;
+  - Em que `\(y_i^* = f(x_i) + e^*_i\)`.
+  
+
+---
+
+# Bootstrap Residual
+
+No contexto de dados, as osbervações `\(x_i\)` permanecem inalteradas:
+
+&lt;img src="images/RS_Resampling.png" width="771" style="display: block; margin: auto;" /&gt;
+
+O Bootstrap Residual permite aplicação de **dados experimentais**.
+
+---
+
+# Bootstrap Residual
+
+A função para nosso exemplo seria:
+
+
+```r
+boot_rsd &lt;- function(mod_obj, df){
+  # Reamostrando o resíduo
+  predito &lt;- mod_obj$fitted.values
+  residuo &lt;- mod_obj$residuals
+  rsd_reamostra &lt;- sample(residuo, replace = T)
+  
+  # Recriando o df
+  df$mpg &lt;- predito + rsd_reamostra
+  
+  # Ajustando modelo
+  m &lt;- lm(mpg ~ hp + am + qsec, data = df)
+  
+  # Extraindo e retornando coeficientes
+  coeficientes &lt;- t(coef(m)) %&gt;% as.data.frame()
+  return(coeficientes)
+}
+```
+
+A distribuição obtida com: `map_dfr(1:B, ~boot_rsd(modelo, mtcars)`.
+
+
+
+---
+
+# Bootstrap Residual
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+---
+
+# Bootstrap Residual
+
+Vamos verificar os valores numéricos:
+
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.63 [-6.25; 39.51] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.24; 8.72] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.59; 1.51] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.91 [-4.22; 46.42] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.71 [2.54; 8.32] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.03] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.36 [-0.93; 1.45] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.5 [-3.96; 37.27] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 [3.56; 8.38] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.07; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.47 [-0.49; 1.4] &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+&lt;br&gt;
+
+Bootstrap Residual apresentou amplitudes menores do que o Normal:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45.75 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.48 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50.64 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.78 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.38 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 41.23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.81 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.89 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;br&gt;
+
+**Esta variação depende da qualidade do ajuste da rega de predição.**
+
+---
+class: inverse, center, middle
+
+# Bootstrap Paramétrico
+
+
+---
+
+# Bootstrap Paramétrico
+
+Também depende de modelo `\(y_i = f(x_i) + \varepsilon_i\)`.
+
+Chamado de paramétrico por assumir uma distribuição `\(F_{\varepsilon}\)` para `\(\varepsilon_i\)`.
+
+No caso do modelo linear:
+
+$$
+\varepsilon_i \sim N(0, \sigma)
+$$
+
+--
+
+&lt;br&gt;
+
+Similar ao residual, mas amostrando `\(e_i\)` da distribuição assumida.
+
+A reamostragem `\(\mathbf{S}^*\)` é obtida por:
+  - Obtendo `\(e*_1, ..., e*_n\)` de `\(F_{\varepsilon}\)`.
+  
+  - Fazendo `\(S_i^* = (x_i, y^*_i)\)`;
+  
+  - Em que `\(y_i^* = f(x_i) + e^*_i\)`.
+  
+  
+---
+
+# Bootstrap Paramétrico
+
+Também pode ser aplicado a dados experimentais.
+
+&lt;img src="images/PR_Resampling.png" width="850" style="display: block; margin: auto;" /&gt;
+
+Depende de qualidade de ajuste e pressuposição de distribuição.
+
+---
+
+# Bootstrap Paramétrico
+
+Para o noso exemplo, com `\(\varepsilon_i \sim N(0, \sigma)\)` fazendo `\(\hat{\sigma} = s(e_1, ..., e_n)\)`.
+
+
+```r
+boot_prm &lt;- function(mod_obj, df){
+  
+  # Reamostrando o resíduo
+  predito &lt;- modelo$fitted.values
+  desvpad &lt;- sd(modelo$residuals)
+  
+  # Recriando o df
+  df$mpg &lt;- predito + rnorm(nrow(df), 0, desvpad)
+  
+  # Ajustando modelo
+  m &lt;- lm(mpg ~ hp + am + qsec, data = df)
+  
+  # Extraindo e retornando coeficientes
+  coeficientes &lt;- t(coef(m)) %&gt;% as.data.frame()
+  return(coeficientes)
+}
+```
+
+E a distribuição obtida por: `map_dfr(1:B, ~boot_prm(modelo, mtcars))`.
+
+
+
+---
+
+# Bootstrap Paramétrico
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+---
+
+# Bootstrap Paramétrico
+
+Estimativas muito similares às do modelo:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.63 [-6.25; 39.51] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.24; 8.72] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.59; 1.51] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.91 [-4.22; 46.42] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.71 [2.54; 8.32] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.03] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.36 [-0.93; 1.45] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.5 [-3.96; 37.27] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 [3.56; 8.38] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.07; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.47 [-0.49; 1.4] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootPRM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.6 [-4.29; 37.71] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.5; 8.48] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.07; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.5; 1.42] &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+&lt;br&gt;
+
+Também apresentou amplitudes menores do que o IC Normal:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45.75 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.48 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50.64 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.78 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.38 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 41.23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.81 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootPRM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 42.00 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.93 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: inverse, center, middle
+
+# Abordagem Bayesiana
+
+## Bootstrap Bayesiano e similaridades inferenciais
+
+---
+
+# Bootstrap Bayesiano
+
+Considerando que, no Bootstrap de [Efron (1979)](https://link.springer.com/chapter/10.1007/978-1-4612-4380-9_41):
+
+  - Cada `\(S_i,  i= 1, 2,...,n\)` possui probabilidade `\(w_i = 1/n\)` de escolha;
+  
+  - Em `\(\mathbf{S}*\)` o vetor `\(\mathbf{w} = w_1, w_2, ..., w_n\)` varia.
+    - Podendo ser zero para alguns `\(i\)`.
+  
+  - E que, no caso da média:
+  
+`$$T(x_i) = \sum_{i=1}^n{w_ix_i}$$`
+  
+[Rubin (1981)](https://www.jstor.org/stable/2240875?casa_token=7misrY9zsWgAAAAA:cqv7vEBk4Pf-3m2WfEqXKQWrcEARYjG-d1Q-wNlsD6-VbiLFSnkJyl7FETejaOzKHBsEjyU2SE1wgXErSe-pfalj4EMejWd_dRvic-wRQ3JxXCj9js69TQ&amp;seq=1#metadata_info_tab_contents) mostra que, assumindo `\(w_i\)` como V.A. então:
+
+`$$T^*(x_i) = \sum_{i=1}^n{w_ix_i}$$`
+
+seria a interpretação Bayesiana do Bootstrap.
+
+
+---
+
+# Bootstrap Bayesiano
+
+Assume-se distribuição Dirichlet `\(n\)`-variada:
+
+`$$f(x_1, ..., x_n; \alpha_1, ..., \alpha_n) = \left(\prod_{i=1}^n\Gamma(\alpha_i) \right)^{-1} \Gamma \left(\sum_{i=1}^n{\alpha_i}\right) \prod_{i=1}^n x_i^{\alpha_i-1}$$`
+tomando `\(\alpha_i = 1\)`. O que resulta em:
+
+`$$E[X_i] = \alpha_i/\sum_{j=1}^n{\alpha_j} = 1/n$$`
+--
+
+&lt;br&gt;
+
+De forma geral:
+
+  - Obter uma amostra `\(\mathbf{w}\)` da Dirichlet;
+  
+  - Fazer `\(T(\mathbf{S}^*) = T(\mathbf{S}, \mathbf{w})\)`.
+  
+Onde `\(T(\mathbf{S}, \mathbf{w})\)` é a equivalente a `\(T(\mathbf{S})\)` que pondere as observações por `\(\mathbf{w}\)`.
+
+---
+
+# Bootstrap Bayesiano
+
+Na prática, `\(\mathbf{S}^*\)` nem chega a ser obtido:
+
+&lt;img src="images/BAY_Resampling.png" width="833" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bootstrap Bayesiano
+
+A função de Bootstrap Bayesiano para o exemplo seria:
+
+
+```r
+boot_bay &lt;- function(df){
+  # Obtendo os pesos
+  w &lt;- MCMCpack::rdirichlet(n = 1, alpha = rep(1, nrow(df))) %&gt;% 
+    as.numeric()
+  
+  # Ajustando modelo
+  m &lt;- lm(mpg ~ hp + am + qsec, data = df, weights = w)
+  
+  # Extraindo e retornando os coeficientes
+  coeficientes &lt;- t(coef(m)) %&gt;% as.data.frame()
+  return(coeficientes)
+}
+```
+
+**Nota**: A distribuição Dirichlet não retorna `\(w_i = 0\)`, mas valores pequenos.
+
+A obtenção da distribuição, novamente, é:
+
+
+```r
+plan(multisession) # Abrindo multi-sessões do R
+dist_bay &lt;- future_map_dfr(1:B, ~boot_bay(df = mtcars))
+```
+
+---
+
+# Bootstrap Bayesiano
+
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+---
+
+# Bootstrap Bayesiano
+
+Vamos ver os valores:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.63 [-6.25; 39.51] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.24; 8.72] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.59; 1.51] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.91 [-4.22; 46.42] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.71 [2.54; 8.32] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.03] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.36 [-0.93; 1.45] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.5 [-3.96; 37.27] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 [3.56; 8.38] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.07; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.47 [-0.49; 1.4] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootPRM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.6 [-4.29; 37.71] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.98 [3.5; 8.48] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.07; -0.02] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.46 [-0.5; 1.42] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootBAY &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.16 [-0.72; 39.87] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.8 [3.31; 8.13] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.05 [-0.08; -0.03] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.4 [-0.59; 1.3] &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+Também apresentou amplitudes menores do que o IC Normal:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; am &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; qsec &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Normal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45.75 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.48 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootNPR &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50.64 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.78 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.38 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootRSD &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 41.23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.81 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootPRM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 42.00 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.93 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; BootBAY &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 40.59 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.83 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.89 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: inverse, center, middle
+
+# Bootstrap 632+
+
+### Alternativa para validação cruzada
+
+---
+
+# Performance de modelos
+
+De forma geral, performance está ligada com a perda `\(L[f(x_i), y_i]\)`.
+
+Exemplos de função perda são: EQM, 1-Acurácia e a Entropia cruzada.
+
+É de interesse estimar a performance em novos dados.
+
+--
+
+&lt;br&gt;
+
+As formas mais usadas para estimar `\(L[f(x_i), y_i]\)` em novos dados são:
+
+  - Partição Treino-Teste
+  
+  - Validação Cruzada Leave-One-Out 
+  
+  - Validação Cruzada K-fold
+  
+&lt;br&gt;
+  
+Um estudo aprofundado para **seleção de modelos** por [Arlot  e Celisse (2010)](https://projecteuclid.org/euclid.ssu/1268143839).
+
+Segundo, [Tibshirani e Efron (2012)](https://www.tandfonline.com/doi/abs/10.1080/01621459.1997.10474007), CV pode não ser ideais para **estimar performance**.
+
+---
+
+# Bootstrap da performance
+
+Uma alternativa a esses métodos é utilizar o bootstrap.
+
+Pode-se ajustar o modelo e avaliar a perda em `\(\mathbf{S}^*\)`:
+
+&lt;br&gt;
+
+`$$\overline{err} = \frac{1}{B}\sum_{j=1}^B \frac{1}{n}\sum_{i=1}^n L[f(x^*_i), y^*_i]$$`
+
+--
+
+&lt;br&gt;
+
+Mas, este método é viesado por:
+
+  - Medir perda nos dados de treino;
+  
+  - Conter observações repetidas.
+
+
+Existe uma forma de obter dados de teste.
+
+---
+
+# Bootstrap da performance
+
+Em uma amostragem a probabilidade de cada observação é `\(1/n\)`.
+
+Portanto, em `\(n \to \infty\)` amostragens com reposição:
+
+`$$P(x_i \notin S^*) = \left(1-\frac{1}{n}\right)^n \approx e^{-1} = 0.368$$`
+
+&lt;img src="bootstrap-variations-paralel_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+
+Portanto, as observações únicas de `\(\mathbf{S}^*\)` serão, em média, `\(0.632n\)` de `\(\mathbf{S}\)`.
+
+---
+
+# Bootstrap da performance
+
+Definindo `\(\mathbf{S}^{368}\)` como a amostra de observações não selecionadas.
+
+  - Possuirá, em média, tamanho `\(n_{368} = 0.368n\)`.
+
+&lt;br&gt;
+
+Podemos avaliar a perda de cada amostragem nos dados:
+
+`$$Err_{boot} = \frac{1}{B}\sum_{j=1}^B \frac{1}{n_{368}}\sum_{i=1}^{n_{368}} L[f(x^{368}_i), y^{368}_i]$$`
+
+--
+
+&lt;br&gt;
+
+Mas possui viés pessimista:
+    
+  - Modelo ajustado em dados com observações repetidas;
+  
+  - Além da variabilidade naturalmente maior.
+  
+&lt;br&gt;
+
+Uma solução é o **Bootstrap 632**.
+
+---
+
+# Bootstrap 632
+
+Proposto por Efron e Tibshirani (1997).
+
+Combina as duas quantidades: 
+
+  - `\(\overline{err}\)`: Viés otimista;
+  - `\(Err_{boot}\)`: Viés pessimista.
+
+Com base nas proporções `\(0.632\)` e `\(0.368\)` faz-se:
+
+
+`$$Err_{632} = 0.368\times \overline{err} + 0.632\times Err_{boot}$$`
+
+dessa forma obtendo menor viés. Para `\(n\)` pequeno usar `\((1-1/n)^n\)`.
+
+&lt;br&gt;
+
+Os autores também mostram que:
+
+  - A variância do  método é menor do que a obtida por Validação Cruzada.
+  
+  - Entretanto, é viesado para modelos com **overfitting**, onde `\(\overline{err} = 0\)`
+  
+    - Por isso, é proposta correção que resulta no **Bootstrap 632+**
+  
+
+---
+
+# Bootstrap 632+
+
+A estimativa é obtida por:
+
+`$$Err_{632+} = (1 - z)\times \overline{err} + z\times Err_{boot}$$`
+
+Em que:
+
+`$$z = 0.632/(1-0.368R) \quad\text{e}\quad R = \frac{Err_{boot} - \overline{err}}{\gamma - \overline{err}}$$`
+
+sendo que `\(\gamma\)` é o erro na ausência de informação, obtido de todas as possíveis combinações de `\(y_i\)` e `\(x_i\)`:
+
+`$$\gamma = \frac{1}{n^2} \sum_{i=1}^{n}\sum_{j=1}^{n}L[f(x_i), y_i]$$`
+
+O `\(R\)` é uma medida de *overfitting*.
+
+Quando `\(R=0\)` então `\(Err_{632+} = Err_{632}\)`
+
+---
+
+# Bootstrap 632
+
+Na prática, realiza-se Bootstrap Não-paramétrico com "passos extras".
+
+&lt;img src="images/632_Resampling.png" width="1113" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bootstrap 632
+
+A função que realiza o Bootstrap 632:
+
+
+```r
+boot_632 &lt;- function(df){
+  
+  # Recriando o df
+  ind &lt;- sample(1:nrow(df), size = nrow(df), replace = T)
+  trn &lt;- df[ind, ]
+  tst &lt;- df[-ind, ]
+  
+  # Ajustando modelo
+  m &lt;- lm(mpg ~ hp + am + qsec, data = trn)
+  
+  # Retornando resultados
+  resultado &lt;- tibble(
+    Treino  = mean((predict(m, trn) - trn$mpg)^2),
+    Teste   = mean((predict(m, tst) - tst$mpg)^2),
+    Boot632 = 0.632*Teste + 0.368*Treino)
+  
+  return(resultado)
+}
+```
+
+
+
+---
+
+# Bootstrap 632
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+
+---
+
+# Bootstrap 632
+
+Vamos ver os valores:
+
+&lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Metodo &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Estimativa &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; IC 95% &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Amplitude &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Boot632 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9.446085 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; [6.29; 15.18] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8.888770 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Teste &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11.118737 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; [5.06; 21.26] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.195577 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Treino &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.573486 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; [3.66; 9.52] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.856172 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+O método 632 combinou:
+
+  - Baixa variabilidade e viés otimista do Treino;
+  
+  - Alta variabilidade e viés pessimista do Teste.
+
+--
+
+&lt;br&gt;
+
+Essa implementação não considerou:
+
+  - Correção 0.632+ para grau de *overfitting*;
+  
+  - Uso de `\((1-\frac{1}{n})^n\)` para `\(n\)` pequeno ao invés de `\(0.632\)` e `\(0.368\)`.
+
+
+---
+class: inverse, center, middle
+
+# Conclusão
+
+---
+
+# Conclusão
+
+**É um método versátil**
+
+Possui variações que permitem diferentes aplicações.
+
+Permite avaliar variabilidade facilmente quando:
+
+  - É difícil de derivar `\(\sigma\)`;
+  
+  - Modelos são recentes e complexos;
+  
+  - Há comparação de modelos de diferentes teorias.
+
+--
+
+&lt;br&gt;
+
+**Entretanto**
+
+Dá a falsa impressão de independer de pressuposições.
+
+
+Algumas **limitações dos Não-paramétrico e Bayesiano** (Rubin, 1981):
+
+  - Não atribui probabilidades parecidas para observações parecidas;
+  
+  - Usa somente valores observados como espaço amostral.
+
+
+---
+
+# Referências
+
+Arlot, S., and Celisse, A. (2010). A survey of cross-validation procedures for model selection. *Statistics surveys, 4*, 40-79. [Acesse](https://projecteuclid.org/euclid.ssu/1268143839).
+
+&lt;br&gt;
+Efron, B. (1979). Computers and the theory of statistics: thinking the unthinkable. *SIAM review 21(4)*, 460–480. [Acesse](https://epubs.siam.org/doi/abs/10.1137/1021092).
+
+&lt;br&gt;
+Efron, B. (1987). Better bootstrap confidence intervals. *Journal of the American statistical Association 82(397)*, 171–185. [Acesse](https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1987.10478410).
+
+&lt;br&gt;
+Efron, B., and Tibshirani, R. (1997). Improvements on cross-validation: the 632+ bootstrap method. *Journal of the American Statistical Association 92(438)*, 548–560. [Acesse](https://www.tandfonline.com/doi/abs/10.1080/01621459.1997.10474007).
+
+&lt;br&gt;
+Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis*. Springer-Verlag New York.
+
+---
+
+# Referências
+
+Wickham, H. and Henry, L. (2019). tidyr: Easily Tidy Data with ‘spread()’ and ‘gather()’ Functions. R package version 0.8.3. [Acesse](https://CRAN.R-project.org/package=tidyr).
+
+&lt;br&gt;
+Witten, I. H., Frank, E., Hall, M. A., and Pal, C. J. (2016). *Data Mining: Practical machine learning tools and techniques*. Morgan Kaufmann.
+
+&lt;br&gt;
+R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing. In: Vienna, Austria.  [Acesse](https://www.R-project.org/).
+
+&lt;br&gt;
+Vaughan, D. and Matt Dancho, M. (2018). furrr: Apply Mapping Functions in Parallel using Futures. R package version 0.1.0. [Acesse](https://CRAN.R-project.org/package=furrr).
+
+
+---
+class: center, middle
+
+# Obrigado!
+
+Apresentação em: LINK AQUI
+
+# Perguntas!
+
+
+&lt;br&gt;
+
+### Anderson Cristiano Neisse
+
+Site: [aneisse.com](https://aneisse.com/)
+
+Twitter: [@a_neisse](https://twitter.com/a_neisse)
+
+LinkedIn: [anderson-neisse](https://www.linkedin.com/in/anderson-neisse/)
+
+&lt;br&gt;
+**Slides feitos com o pacote** [xaringan](https://github.com/yihui/xaringan).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
