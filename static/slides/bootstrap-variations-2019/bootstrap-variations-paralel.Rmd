@@ -161,6 +161,13 @@ summary(modelo)$coefficients
 
 
 ---
+class: inverse, center, middle
+
+# Iterações no R
+
+### Melhorando o desempenho
+
+---
 
 # Iterações no R
 
@@ -207,6 +214,7 @@ Em questão de performance são similares:
 
 ```{r, echo=FALSE, eval=FALSE}
 # Criando função for
+B = 10000
 benchmark <- function(){
   
   # Avaliando for
@@ -232,26 +240,32 @@ benchmark <- function(){
   maptoc <- tictoc::toc(quiet = T)  
   maploop <- maptoc$toc - maptoc$tic
   
-  return(tibble::tibble(For = forloop, Apply = applyloop, Map = maploop))
+  # Avaliando future_map
+  tictoc::tic()
+  resultado <- furrr::future_map_dbl(.x = 1:B, ~mean(1:.x))
+  fmaptoc <- tictoc::toc(quiet = T)  
+  fmaploop <- fmaptoc$toc - fmaptoc$tic
+  
+  return(tibble::tibble(For = forloop, Apply = applyloop, Map = maploop, Future_Map = fmaploop))
 }
 
 library(furrr)
 plan(multisession)
 
-bench_loop <- future_map_dfr(1:10000, ~benchmark())
+bench_loop <- map_dfr(1:1000, ~benchmark())
 ```
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.width=9, fig.height=4, dpi=300}
 library(tidyverse)
 
-bench_loop %>% gather(Metodo, Tempo) %>% 
+bench_loop %>% select(-Future_Map) %>% gather(Metodo, Tempo) %>% 
   mutate(Metodo = factor(Metodo, levels = c("For", "Apply", "Map"))) %>% 
   ggplot(aes(x = Metodo, y = Tempo)) +
   geom_boxplot() + labs(x = NULL, y = "Tempo (s)") + 
-  theme_bw() + scale_y_continuous(limits = c(0.30, 0.70)) +
+  theme_bw() + scale_y_continuous(limits = c(0.0, 0.55)) +
   theme(text = element_text(size = 22))
 
-kable(t(map_dbl(bench_loop, ~mean(.x))), align = 'c', caption = "Média de tempo por método.")
+kable(t(map_dbl(bench_loop %>% select(-Future_Map), ~mean(.x))), align = 'c', caption = "Média de tempo por método.")
 ```
 
 ---
@@ -308,6 +322,11 @@ O pacote furrr mistura:
 
 O pacote `furrr` simplifica o uso de `future` com a **família** **`future_map`**.
 
+```{r, eval=FALSE}
+plan(multisession)
+resultado <- future_map_dbl(.x = 1:B, ~mean(1:.x))
+```
+
 <br>
 
 O `future` é mais geral e permite mais aplicações. Aprofundamento [aqui](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html).
@@ -341,6 +360,23 @@ Mais sobre o `furrr` e documentação [aqui](https://github.com/DavisVaughan/fur
 Mais sobre iterações no R? [R for Data Science: Iteration](https://r4ds.had.co.nz/iteration.html).
 
 ---
+
+# Paralelização: pacote furrr
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.width=9, fig.height=4, dpi=300}
+library(tidyverse)
+
+bench_loop %>% gather(Metodo, Tempo) %>% 
+  mutate(Metodo = factor(Metodo, levels = c("For", "Apply", "Map", "Future_Map"))) %>% 
+  ggplot(aes(x = Metodo, y = Tempo)) +
+  geom_boxplot() + labs(x = NULL, y = "Tempo (s)") + 
+  theme_bw() + scale_y_continuous(limits = c(0.0, 0.55)) +
+  theme(text = element_text(size = 22))
+
+kable(t(map_dbl(bench_loop, ~mean(.x))), align = 'c', caption = "Média de tempo por método.")
+```
+
+---
 class: inverse, center, middle
 
 # Bootstrap Não-paramétrico
@@ -363,7 +399,7 @@ knitr::include_graphics("images/NP_Resampling.png", dpi = 150)
 ```
 
 
-É o método mais utilizado pela simplicidade de aplicação.
+Frequentemente utilizado pela simplicidade de aplicação.
 
 
 ---
@@ -625,7 +661,7 @@ ci %>% transmute(Parametro = Parametro,
 
 <br>
 
-Bootstrap Residual apresentou amplitudes menores do que o Normal:
+Bootstrap pode resultar em IC erroneamente precisos para $n$ pequeno:
 
 ```{r, echo=FALSE}
 ci %>% transmute(Parametro = Parametro,
@@ -639,7 +675,7 @@ ci %>% transmute(Parametro = Parametro,
 
 <br>
 
-**Esta variação depende da qualidade do ajuste da rega de predição.**
+Alguns métodos melhorados de IC Bootstrap por [DiCiccio e Efron (1996)](https://www.jstor.org/stable/pdf/2246110.pdf?refreqid=excelsior%3A4c2fbe99e624724492a165ebaff888e0)
 
 ---
 class: inverse, center, middle
@@ -818,7 +854,7 @@ $$T(x_i) = \sum_{i=1}^n{w_ix_i}$$
   
 [Rubin (1981)](https://www.jstor.org/stable/2240875?casa_token=7misrY9zsWgAAAAA:cqv7vEBk4Pf-3m2WfEqXKQWrcEARYjG-d1Q-wNlsD6-VbiLFSnkJyl7FETejaOzKHBsEjyU2SE1wgXErSe-pfalj4EMejWd_dRvic-wRQ3JxXCj9js69TQ&seq=1#metadata_info_tab_contents) mostra que, assumindo $w_i$ como V.A. então:
 
-$$T^*(x_i) = \sum_{i=1}^n{w_ix_i}$$
+$$T(x_i^*) = \sum_{i=1}^n{w_ix_i}$$
 
 seria a interpretação Bayesiana do Bootstrap.
 
@@ -839,7 +875,7 @@ $$E[X_i] = \alpha_i/\sum_{j=1}^n{\alpha_j} = 1/n$$
 
 De forma geral:
 
-  - Obter uma amostra $\mathbf{w}$ da Dirichlet;
+  - Obter uma amostra $\mathbf{w}$ da Dirichlet n-variada;
   
   - Fazer $T(\mathbf{S}^*) = T(\mathbf{S}, \mathbf{w})$.
   
@@ -1170,6 +1206,7 @@ dist_632 <- future_map_dfr(1:B, ~boot_632(df = mtcars))
 ```{r, echo=FALSE, fig.width=12, fig.height=8, warning=FALSE}
 ci_632 <- dist_632 %>% 
   gather(Metodo, MSE) %>% 
+  mutate(Metodo = factor(Metodo, c("Treino", "Teste", "Boot632"))) %>% 
   group_by(Metodo) %>% 
   summarise(LInf = quantile(MSE, 0.025),
             Estimativa = mean(MSE),
@@ -1265,6 +1302,9 @@ Algumas **limitações dos Não-paramétrico e Bayesiano** (Rubin, 1981):
 # Referências
 
 Arlot, S., and Celisse, A. (2010). A survey of cross-validation procedures for model selection. *Statistics surveys, 4*, 40-79. [Acesse](https://projecteuclid.org/euclid.ssu/1268143839).
+
+<br>
+DiCiccio, T. J., & Efron, B. (1996). Bootstrap confidence intervals. Statistical science, 189-212. [Acesse](https://www.jstor.org/stable/pdf/2246110.pdf?refreqid=excelsior%3A4c2fbe99e624724492a165ebaff888e0).
 
 <br>
 Efron, B. (1979). Computers and the theory of statistics: thinking the unthinkable. *SIAM review 21(4)*, 460–480. [Acesse](https://epubs.siam.org/doi/abs/10.1137/1021092).

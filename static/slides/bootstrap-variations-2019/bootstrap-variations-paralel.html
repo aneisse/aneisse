@@ -158,6 +158,13 @@ summary(modelo)$coefficients
 
 
 ---
+class: inverse, center, middle
+
+# Iterações no R
+
+### Melhorando o desempenho
+
+---
 
 # Iterações no R
 
@@ -216,9 +223,9 @@ Em questão de performance são similares:
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:center;"&gt; 0.48771 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.502423 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.509599 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.27548 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.28675 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.29004 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -277,6 +284,12 @@ O pacote furrr mistura:
 
 O pacote `furrr` simplifica o uso de `future` com a **família** **`future_map`**.
 
+
+```r
+plan(multisession)
+resultado &lt;- future_map_dbl(.x = 1:B, ~mean(1:.x))
+```
+
 &lt;br&gt;
 
 O `future` é mais geral e permite mais aplicações. Aprofundamento [aqui](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html).
@@ -310,6 +323,30 @@ Mais sobre o `furrr` e documentação [aqui](https://github.com/DavisVaughan/fur
 Mais sobre iterações no R? [R for Data Science: Iteration](https://r4ds.had.co.nz/iteration.html).
 
 ---
+
+# Paralelização: pacote furrr
+
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;&lt;table&gt;
+&lt;caption&gt;Média de tempo por método.&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; For &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Apply &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Map &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Future_Map &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 0.27548 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.28675 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.29004 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.16961 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
 class: inverse, center, middle
 
 # Bootstrap Não-paramétrico
@@ -330,7 +367,7 @@ No contexto de dados, linhas inteiras são reamostradas:
 &lt;img src="images/NP_Resampling.png" width="480" style="display: block; margin: auto;" /&gt;
 
 
-É o método mais utilizado pela simplicidade de aplicação.
+Frequentemente utilizado pela simplicidade de aplicação.
 
 
 ---
@@ -368,7 +405,7 @@ dist_npr &lt;- future_map_dfr(1:B, ~boot_npr(df = mtcars))
 
 # Bootstrap Não-paramétrico
 
-![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -516,7 +553,7 @@ A distribuição obtida com: `map_dfr(1:B, ~boot_rsd(modelo, mtcars)`.
 
 # Bootstrap Residual
 
-![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -564,7 +601,7 @@ Vamos verificar os valores numéricos:
 
 &lt;br&gt;
 
-Bootstrap Residual apresentou amplitudes menores do que o Normal:
+Bootstrap pode resultar em IC erroneamente precisos para `\(n\)` pequeno:
 
 &lt;table class="table table-striped" style="font-size: 18px; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
@@ -603,7 +640,7 @@ Bootstrap Residual apresentou amplitudes menores do que o Normal:
 
 &lt;br&gt;
 
-**Esta variação depende da qualidade do ajuste da rega de predição.**
+Alguns métodos melhorados de IC Bootstrap por [DiCiccio e Efron (1996)](https://www.jstor.org/stable/pdf/2246110.pdf?refreqid=excelsior%3A4c2fbe99e624724492a165ebaff888e0)
 
 ---
 class: inverse, center, middle
@@ -683,7 +720,7 @@ E a distribuição obtida por: `map_dfr(1:B, ~boot_prm(modelo, mtcars))`.
 
 # Bootstrap Paramétrico
 
-![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -805,7 +842,7 @@ Considerando que, no Bootstrap de [Efron (1979)](https://link.springer.com/chapt
   
 [Rubin (1981)](https://www.jstor.org/stable/2240875?casa_token=7misrY9zsWgAAAAA:cqv7vEBk4Pf-3m2WfEqXKQWrcEARYjG-d1Q-wNlsD6-VbiLFSnkJyl7FETejaOzKHBsEjyU2SE1wgXErSe-pfalj4EMejWd_dRvic-wRQ3JxXCj9js69TQ&amp;seq=1#metadata_info_tab_contents) mostra que, assumindo `\(w_i\)` como V.A. então:
 
-`$$T^*(x_i) = \sum_{i=1}^n{w_ix_i}$$`
+`$$T(x_i^*) = \sum_{i=1}^n{w_ix_i}$$`
 
 seria a interpretação Bayesiana do Bootstrap.
 
@@ -826,7 +863,7 @@ tomando `\(\alpha_i = 1\)`. O que resulta em:
 
 De forma geral:
 
-  - Obter uma amostra `\(\mathbf{w}\)` da Dirichlet;
+  - Obter uma amostra `\(\mathbf{w}\)` da Dirichlet n-variada;
   
   - Fazer `\(T(\mathbf{S}^*) = T(\mathbf{S}, \mathbf{w})\)`.
   
@@ -877,7 +914,7 @@ dist_bay &lt;- future_map_dfr(1:B, ~boot_bay(df = mtcars))
 # Bootstrap Bayesiano
 
 
-![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1057,7 +1094,7 @@ Portanto, em `\(n \to \infty\)` amostragens com reposição:
 
 `$$P(x_i \notin S^*) = \left(1-\frac{1}{n}\right)^n \approx e^{-1} = 0.368$$`
 
-&lt;img src="bootstrap-variations-paralel_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="bootstrap-variations-paralel_files/figure-html/unnamed-chunk-37-1.png" style="display: block; margin: auto;" /&gt;
 
 Portanto, as observações únicas de `\(\mathbf{S}^*\)` serão, em média, `\(0.632n\)` de `\(\mathbf{S}\)`.
 
@@ -1180,7 +1217,7 @@ boot_632 &lt;- function(df){
 
 # Bootstrap 632
 
-![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+![](bootstrap-variations-paralel_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1199,10 +1236,10 @@ Vamos ver os valores:
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:center;"&gt; Boot632 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 9.446085 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; [6.29; 15.18] &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 8.888770 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Treino &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.573486 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; [3.66; 9.52] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.856172 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:center;"&gt; Teste &lt;/td&gt;
@@ -1211,10 +1248,10 @@ Vamos ver os valores:
    &lt;td style="text-align:center;"&gt; 16.195577 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:center;"&gt; Treino &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 6.573486 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; [3.66; 9.52] &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 5.856172 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Boot632 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9.446085 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; [6.29; 15.18] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8.888770 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1279,6 +1316,9 @@ Algumas **limitações dos Não-paramétrico e Bayesiano** (Rubin, 1981):
 # Referências
 
 Arlot, S., and Celisse, A. (2010). A survey of cross-validation procedures for model selection. *Statistics surveys, 4*, 40-79. [Acesse](https://projecteuclid.org/euclid.ssu/1268143839).
+
+&lt;br&gt;
+DiCiccio, T. J., &amp; Efron, B. (1996). Bootstrap confidence intervals. Statistical science, 189-212. [Acesse](https://www.jstor.org/stable/pdf/2246110.pdf?refreqid=excelsior%3A4c2fbe99e624724492a165ebaff888e0).
 
 &lt;br&gt;
 Efron, B. (1979). Computers and the theory of statistics: thinking the unthinkable. *SIAM review 21(4)*, 460–480. [Acesse](https://epubs.siam.org/doi/abs/10.1137/1021092).
