@@ -18,7 +18,7 @@ class: inverse, center, middle
 ```{r xaringan-themer, include = FALSE}
 library(xaringanthemer)
 write_xaringan_theme(title_slide_background_color = "white",
-                     title_slide_background_image = "Logo2.png", 
+                     title_slide_background_image = "images/Logo2.png", 
                      title_slide_background_size = "100% 100%", 
                      title_slide_background_position = "0% 0%", 
                      title_slide_text_color = "black", 
@@ -35,11 +35,22 @@ extra_css <- list(
 write_extra_css(extra_css)
 ```
 
+```{r, include=FALSE}
+# Loading the results in order to not need to run them all again
+library(tidyverse)
+library(kableExtra)
+load("models_and_bootstraps.RDS")
+```
+
+
 # Chronic Fatigue Syndrome
 
 ## Definition and factors
 
 ---
+background-image: url(images/cfs1.png)
+background-position: 0% 100%
+background-size: 200px 200px
 
 # Chronic Fatigue Syndrome (CFS)
 
@@ -47,19 +58,19 @@ According to the World Health Organization (WHO/OMS):
   >...serious, long-term illness that affects many body systems. People with it are often not able to do their usual activities and, at times, may be confined to bed.
 
 
-In medical practices since 1988, it's also called *Myalgic encephalomyelitis* (ME).
-
-CFS affects children's life quality **as much as Asthma and Type I Diabetes Melitus** (Kennedy et al., 2010).
-
---
+In medical practices since 1988, it's also called **Myalgic encephalomyelitis** (ME).
 
 --- 
 
-First definined by the USA Center for Disease Control  (Holmes et al., 1988).
+First defined by the USA Center for Disease Control  (Holmes et al., 1988).
 
 The revision of Fukuda et al. (1994) is most frequently used.
 
 ---
+background-image: url(images/cfs2.jpg)
+background-position: 95% 50%
+background-size: 300px 200px
+
 ## Fukuda's case definition
 
 A case of Chronic Fatigue Syndrome has:
@@ -72,51 +83,54 @@ A case of Chronic Fatigue Syndrome has:
   - Muscle pain;
   - Joint pain;
   - Headaches;
-  - Memory or concentration impairment;
   - Tender lymph nodes;
   - Unrefreshing sleep;
-  - Post-extersional malaise*****.
+  - Memory or concentration impairment;
+  - Post-extertional malaise*****.
 
-.footnote[[*****] Critisized by not demanding this important symptom (Williams et al., 2014)].
+.footnote[[*****] Criticized by not demanding this important symptom (Williams et al., 2014)].
 
 
 ---
+background-image: url(images/exclamation.png)
+background-position: 75% 90%
+background-size: 90px 150px
 
 # Importance of CFS
 
 Epidemiological studies estimate:
 
 - 410 cases per 100.000 Americans (Jason et al., 1999);
-  - Suggests 1 milion cases in EUA alone;
+  - Suggests 1 million cases in EUA alone;
 
 
 - 850.000 Americans according to Jason e Njoku (2006).
 
 --- 
 
-CFS, therefore, interfeers in the individual's:
+CFS affects children's life quality **as much as Asthma and Type I Diabetes Mellitus** (Kennedy et al., 2010).
+
+CFS, therefore, interferes in the individual's:
 
   - Health condition;
   
   - Social and professional lives.
-  
-
-Affecting negatively both health and economy.
 
 ---
 class: inverse, center, middle
 
 # CFS factors
 
-## The ongoing search
+## The ongoing research
 
 ---
+background-image: url(images/research.png)
+background-position: 95% 90%
+background-size: 150px 150px
 
 # CFS factors
 
 The definition of the CFS factors is an ongoing effort.
-
---
 
 The ones with most evidence are:
 
@@ -141,16 +155,12 @@ There is also evidence of relation with other conditions:
 - **Neurally-mediated hypotension** (Bou-Holaigah et al., 1995).
   
   - Sodium-based treatment reduced the severity in some individuals.
-
-<br>
-
+<br><br>
 - **Metabolic Syndrome** (Maloney et al. (2010).
 
-  - Includes high levels of glicosis and abnormal cholesterol.
-
-<br>
-
-- Elevated risk after 10 years of **Giarda infection** (Litleskare et al., 2018).
+  - Includes high levels of glucose and abnormal cholesterol.
+<br><br>
+- Elevated risk after 10 years of **Giardia infection** (Litleskare et al., 2018).
   
   - Ratio of 2.22 to 4.08 as compared to control cases.
 
@@ -162,13 +172,16 @@ class: inverse, center, middle
 ## Statistical modelling as a path
 
 ---
+background-image: url(images/predict.png)
+background-position: 85% 5%
+background-size: 120px 120px
 
 # CFS Prevention
 
 Given the ongoing search for factors, statistical models are progressing on the prevention:
 <br><br>
 
-- **Nayve Bayes** obtained **AUC of 0.7** on gene expression data (Huang et al., 2007).
+- **Nayve Bayes** obtained **AUC of 0.70** on gene expression data (Huang et al., 2007).
 <br><br><br>
 - Servaes et al. (2002) studied CFS in breast-cancer individuals with **linear models**.
   - Found evidence of physical, psychologic and cognitive factors.
@@ -184,12 +197,15 @@ class: inverse, center, middle
 ## Relations between absenteeism and CFS?
 
 ---
+background-image: url(images/truck.svg)
+background-position: 95% 90%
+background-size: 150px 150px
 
 # The data we had
 
 Cross-sectional study on 621 off-road truck drivers in a **mine**.
   
-The individuals worked on **alternated shifts**: 6hrs shifts with 12hrs of rest.
+The individuals worked on **alternated shifts**: 6hrs shifts and 12hrs of rest.
 
 From the project: **Síndrome Metabólica em Trabalhadores de Mineração em MG**.
 
@@ -209,13 +225,13 @@ The measured variables were:
 
 |       Variable        |           Source        |       Type      |   Average   |   St.Dev.  |  % Miss  |
 |:---------------------:|:-----------------------:|:---------------:|------------:|-----------:|---------:|
-|       Absenteísmo     |     Company regiter     | Binary (Y = 1) |    0.2238   |     -      |   0.00   |
-|          Sexo         |      Medical files      | Binary (M = 1) |    0.9646   |     -      |   0.00   |
-|         Idade         |      Medical files      |   Discrete     |   36.7504   |   7.1336   |   0.00   |
+|         Skipped       |     Company regiter     | Binary (Y = 1) |    0.2238   |     -      |   0.00   |
+|          Sex          |      Medical files      | Binary (M = 1) |    0.9646   |     -      |   0.00   |
+|         Age           |      Medical files      |   Discrete     |   36.7504   |   7.1336   |   0.00   |
 |          BMI          |       Weight/Height²    |   Continuous   |  174.1032   |   7.3123   |   5.25   |
 | Waist/Hips Ratio (n=3)|       Metric tape       |  Continuous    |    0.8566   |   0.1220   |   2.64   |
-|  Total Body Fatness   |       Bioimpedance      |  Continuous    |   24.3923   |   8.1730   |   3.50   |
-|    Visceral Fatness   |       Bioimpedance      |  Continuous    |    7.6712   |   3.4312   |   3.33   |
+|  Total Body Fat       |       Bioimpedance      |  Continuous    |   24.3923   |   8.1730   |   3.50   |
+|    Visceral Fat       |       Bioimpedance      |  Continuous    |    7.6712   |   3.4312   |   3.33   |
 |   Diast. Press. (n=3) |   Semi-autom. Monitor   |  Continuous    |   82.7661   |   9.3659   |   0.16   |
 |    Sist. Press. (n=3) |   Semi-autom. Monitor   |  Continuous    |  131.5532   |  13.7510   |   0.16   |
 |     HDL Cholesterol   |   Colorimetric Enzyme   |  Continuous    |   55.4063   |  16.3538   |   5.79   |
@@ -254,7 +270,7 @@ according to Costa (2010), all factors of CFS.
 ---
 # CFS and shifts on mines
 
-The minning industry is characterized by:
+The mining industry is characterized by:
 
 - Risky work conditions;
 	
@@ -272,7 +288,7 @@ Fatigue is positively correlated with perilous driving (Useche et al., 2017).
 
 # CFS and absenteeism
 
-According to Colquhoun e Senn (2000), shift workers contantly complain of:
+According to Colquhoun e Senn (2000), shift workers constantly complain of:
 
 - Irritability;
 
@@ -282,7 +298,7 @@ According to Colquhoun e Senn (2000), shift workers contantly complain of:
 
 --- 
 
-Shift work on mines may leado not only to CFS, but also:
+Shift work on mines may lead not only to CFS but also:
 
   - Neuroticism;
   
@@ -301,7 +317,7 @@ class: inverse, center, middle
 
 ## Objectives
 
-In such context, we aimed to:
+In this context, we aimed to:
 
 - Study the relation of the variables with absenteeism;
 
@@ -360,7 +376,7 @@ Both Stepwise and Elastic-Net need to select the best models:
   - **10 repetitions**: Reducing variability due to fold randomization;
 
 <br>
-The used metric was the **Area Under the ROC curve (AUC)**: Values close to 1 indicate better class discrimination, as oposed to values close to 0.5.
+The used metric was the **Area Under the ROC curve (AUC)**: Values close to 1 indicate better class discrimination, as opposed to values close to 0.5.
 
 ---
 
@@ -373,7 +389,7 @@ For the coefficients, the **classical Bootstrap**:
   
 --- 
 
-The metrics of **Accuracy**, **Sensiticity** and **Specificity** were assessed by the **Bootstrap 632** (Efron and Tibshirani, 1997):
+The metrics of **Accuracy**, **Sensitivity** and **Specificity** were assessed by the **Bootstrap 632** (Efron and Tibshirani, 1997):
 
   - Perform classical bootstrap and obtain performance $P_{train}$;
   
@@ -390,7 +406,7 @@ The analysis was made in the **R Language** (v3.5.1) using the RStudio IDE (v1.3
 <br>
 The mainly used packages were:
 
-  - `caret`: Model fitting and seletion;
+  - `caret`: Model fitting and selection;
   
   - `ggplot2`: For visualizations;
   
@@ -409,43 +425,116 @@ class: inverse, center, middle
 
 # Variable effects
 
-```{r, echo=FALSE, out.height=300, out.width=1000, fig.align='center'}
-knitr::include_graphics("CoefTable.png")
+```{r, echo=FALSE, out.height=250, out.width=1000, fig.align='center', warning=FALSE}
+knitr::include_graphics("images/CoefTable.png")
 ```
 
-- Cholesterol and Sodium significative in all three models.
+<br>
+- Cholesterol and Sodium were significative in all three models.
 
 - Models either included Triglycerides and HDL or LDL.
 
-- Only 
+- Only Elastic-Net identified Potassium as a factor.
 ---
 
-# Variable effects
+## Variable effects
 
-```{r, echo=FALSE, out.height=450, out.width=600, fig.align='center'}
-knitr::include_graphics("BootEffects1.png")
+```{r, echo=FALSE, out.height=470, out.width=600, fig.align='center', warning=FALSE, dpi=300}
+#knitr::include_graphics("images/BootEffects1.png")
+plot_boot <- mutate(bootStepImp, Model = "Stepwise") %>% 
+  bind_rows(mutate(bootLassoImp, Model = "Lasso")) %>% 
+  bind_rows(mutate(bootElnetImp, Model = "Elastic-Net")) %>% 
+  mutate(Method = ifelse(Model == "Stepwise", "Least Squares", "Regularized Least Squares"),
+         Model = factor(Model, levels = c("Stepwise", "Lasso", "Elastic-Net"))) %>% 
+  select(-cutoff, -AUC, -ACC, -SNS, -SPC) %>% 
+  gather(-Model,-Method, key = "Coefficient", value = "Estimate")
+
+plot_boot_ci <- plot_boot %>% 
+  filter(Coefficient != "(Intercept)") %>% 
+  group_by(Coefficient, Model, Method) %>% 
+  summarise(LInf = quantile(Estimate, 0.05, na.rm = T),
+            LSup = quantile(Estimate, 0.95, na.rm = T),
+            Estimate = mean(Estimate, na.rm = T))
+
+plot_boot$Estimate <- plot_boot$Estimate %>% replace_na(0)
+
+options(scipen = 1000)
+plot_boot %>% 
+  filter(Coefficient != "(Intercept)", Model == "Stepwise") %>% 
+  ggplot(aes(x = Coefficient, y = Estimate)) + 
+  geom_violin(fill = "#440154", color = FALSE, alpha = 0.5) + 
+  geom_pointrange(aes(x = Coefficient, y = Estimate, ymin = LInf, ymax = LSup, group = Model), 
+                  position = position_dodge(width = 0.91), size = 0.9,
+                  data = plot_boot_ci %>% filter(Model == "Stepwise")) +
+  geom_text(aes(x = Coefficient, y = Val, label = round(Val, 4), group = Coefficient, hjust = -0.075), size = 6, 
+            data = plot_boot_ci %>% filter(Model == "Stepwise") %>% 
+              gather(-Coefficient, -Model, -Method, key = "Pos", value = "Val")) + 
+  geom_hline(yintercept = 0, linetype = 3, size = 1) + 
+  labs(x = NULL, y = NULL) +
+  facet_wrap(~Model, scales = "free") + guides(fill = FALSE) +
+  scale_fill_viridis_d() + scale_color_viridis_d() + 
+  scale_x_discrete(labels = c("Chol", "HDL", "LDL", "Potas", "Sod", "Trig")) +
+  theme(panel.grid.major.x = element_line(color = "black")) + 
+  ggpubr::theme_pubr() + theme(text = element_text(size = 21), 
+                               axis.text.y = element_text(size = 18))
 ```
 
 All variables had significative effects.
 ---
 
-# Variable effects
+## Variable effects
 
-```{r, echo=FALSE, out.height=450, out.width=600, fig.align='center'}
-knitr::include_graphics("BootEffects2.png")
+```{r, echo=FALSE, out.height=470, out.width=600, fig.align='center', warning=FALSE, dpi=300}
+#knitr::include_graphics("images/BootEffects2.png")
+plot_boot %>% 
+  filter(Coefficient != "(Intercept)", Model == "Lasso") %>% 
+  ggplot(aes(x = Coefficient, y = Estimate)) + 
+  geom_violin(fill = "#21908c", color = FALSE, alpha = 0.4) + 
+  geom_pointrange(aes(x = Coefficient, y = Estimate, ymin = LInf, ymax = LSup, group = Model), 
+                  position = position_dodge(width = 0.91), size = 0.9,
+                  data = plot_boot_ci %>% filter(Model == "Lasso")) +
+  geom_text(aes(x = Coefficient, y = Val, label = round(Val, 4), group = Coefficient, hjust = -0.075), size = 6, 
+            data = plot_boot_ci %>% filter(Model == "Lasso") %>% 
+              gather(-Coefficient, -Model, -Method, key = "Pos", value = "Val")) + 
+  geom_hline(yintercept = 0, linetype = 3, size = 1) + 
+  labs(x = NULL, y = NULL) +
+  facet_wrap(~Model, scales = "free") + guides(fill = FALSE) +
+  scale_fill_viridis_d() + scale_color_viridis_d() + 
+  scale_x_discrete(labels = c("Chol", "HDL", "LDL", "Potas", "Sod", "Trig")) +
+  theme(panel.grid.major.x = element_line(color = "black")) + 
+  ggpubr::theme_pubr() + theme(text = element_text(size = 21), 
+                               axis.text.y = element_text(size = 18))
 ```
 
 Bias towards zero inherent to Elastic-Net is evident. Variables also significative.
 
 ---
 
-# Variable effects
+## Variable effects
 
-```{r, echo=FALSE, out.height=450, out.width=600, fig.align='center'}
-knitr::include_graphics("BootEffects3.png")
+```{r, echo=FALSE, out.height=470, out.width=600, fig.align='center', warning=FALSE, dpi=300}
+#knitr::include_graphics("images/BootEffects3.png")
+plot_boot %>% 
+  filter(Coefficient != "(Intercept)", Model == "Elastic-Net") %>% 
+  ggplot(aes(x = Coefficient, y = Estimate)) + 
+  geom_violin(fill = "#fde725", color = FALSE, alpha = 0.4) + 
+  geom_pointrange(aes(x = Coefficient, y = Estimate, ymin = LInf, ymax = LSup, group = Model), 
+                  position = position_dodge(width = 0.91), size = 0.9,
+                  data = plot_boot_ci %>% filter(Model == "Elastic-Net")) +
+  geom_text(aes(x = Coefficient, y = Val, label = round(Val, 4), group = Coefficient, hjust = -0.075), size = 6, 
+            data = plot_boot_ci %>% filter(Model == "Elastic-Net") %>% 
+              gather(-Coefficient, -Model, -Method, key = "Pos", value = "Val")) + 
+  geom_hline(yintercept = 0, linetype = 3, size = 1) + 
+  labs(x = NULL, y = NULL) +
+  facet_wrap(~Model, scales = "free") + guides(fill = FALSE) +
+  scale_fill_viridis_d() + scale_color_viridis_d() + 
+  scale_x_discrete(labels = c("Chol", "HDL", "LDL", "Potas", "Sod", "Trig")) +
+  theme(panel.grid.major.x = element_line(color = "black")) + 
+  ggpubr::theme_pubr() + theme(text = element_text(size = 21), 
+                               axis.text.y = element_text(size = 18))
 ```
 
-
+All variables also significative, including Potassium.
 ---
 
 # Variable effects
@@ -470,13 +559,39 @@ The literature shows similar effects for CFS and Absenteeism:
 
 ---
 
-# Model performance
+## Model performance
 
-```{r, echo=FALSE, out.height=430, out.width=600, fig.align='center'}
-knitr::include_graphics("PerfModels.png")
+```{r, echo=FALSE, out.height=470, out.width=600, fig.align='center', dpi=300}
+#knitr::include_graphics("images/PerfModels.png")
+
+plot_boot <- mutate(bootStepImp, Model = "Stepwise") %>% 
+  bind_rows(mutate(bootLassoImp, Model = "Lasso")) %>% 
+  bind_rows(mutate(bootElnetImp, Model = "Elastic-Net")) %>% 
+  select(Model, ACC, SNS, SPC) %>% 
+  gather(-Model, key = "Measure", value = "Estimate") %>% 
+  mutate(Model = factor(Model, levels = c("Stepwise", "Lasso", "Elastic-Net")),
+         Measure = factor(Measure, levels = c("ACC", "SNS", "SPC")))
+
+plot_boot_ci <- plot_boot %>% group_by(Measure, Model) %>% 
+  summarise(LInf = quantile(Estimate, 0.05, na.rm = T),
+            LSup = quantile(Estimate, 0.95, na.rm = T),
+            Estimate = mean(Estimate, na.rm = T))
+
+ggplot(plot_boot, aes(x = Measure, y = Estimate)) + 
+  geom_violin(aes(fill = Model), color = FALSE, alpha = 0.4) + 
+  geom_pointrange(aes(x = Measure, y = Estimate, ymin = LInf, ymax = LSup, group = Model), 
+                  data = plot_boot_ci, position = position_dodge(width = 0.905), size = 0.30) +
+  geom_text(aes(x = Measure, y = Val, label = round(Val, 2), group = Model, hjust = -0.075), 
+            position = position_dodge(width = 0.9), size = 5.5,
+            data = plot_boot_ci %>% gather(-Measure, -Model, key = "Pos", value = "Val")) + 
+  geom_hline(yintercept = 0.50, linetype = 3, size = 1) + 
+  labs(x = " ", y = NULL, fill = NULL) +
+  scale_fill_viridis_d() + scale_color_viridis_d() + 
+  ggpubr::theme_pubr() + theme(text = element_text(size = 21), 
+                               axis.text.y = element_text(size = 18))
 ```
 
-The performance was no different from random guessing for all models.
+The performance was **no different from random guessing** for all models.
 
 
 ---
@@ -484,7 +599,7 @@ The performance was no different from random guessing for all models.
 # Conclusion
 
 Models did not discriminate very well.
-  - Possibly due to noise of dependent's variable (a binary of a whole year).
+  - Possibly due to the noise of dependent variable (a binary of a whole year).
 
 <br>
 However, there was some evidence of factors that affect absenteeism.
@@ -497,7 +612,7 @@ These inferences are not enough to suggest interventions.
 
 We hope to draw attention to the possible relation of absenteeism and shift work of mines with CFS.
 
-More detailed studies are needed, i.e., logitudinal studies directly measuring CFS.
+More detailed studies are needed, i.e., longitudinal studies directly measuring CFS.
 
 ---
 
@@ -594,7 +709,7 @@ class: center, middle
 
 <br>
 ```{r echo=FALSE}
-knitr::include_graphics("institutions.png")
+knitr::include_graphics("images/institutions.png")
 ```
 
 <br>
@@ -611,7 +726,7 @@ class: center, middle
 
 **Anderson Cristiano Neisse**<br>
 
-Site: [aneisse.com](https://aneisse.com/)<br>
+Website: [aneisse.com](https://aneisse.com/)<br>
 
 Twitter: [@a_neisse](https://twitter.com/a_neisse)<br>
 
