@@ -179,3 +179,6 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
 .title-slide h2 {
   color: #9292c7;
 }
+.page-font {
+  font-size: 22px;
+}
