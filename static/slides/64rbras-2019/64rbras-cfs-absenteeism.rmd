@@ -755,4 +755,4 @@ LinkedIn: [anderson-neisse](https://www.linkedin.com/in/anderson-neisse/)
 
 <br>
 
-**Slides made with the [xaringan](https://github.com/yihui/xaringan) R package.**
+**Slides made with the [xaringan](https://github.com/yihui/xaringan) R package!**
