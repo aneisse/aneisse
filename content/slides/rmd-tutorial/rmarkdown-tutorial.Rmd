@@ -1134,4 +1134,4 @@ Twitter: [@a_neisse](https://twitter.com/a_neisse)
 
 LinkedIn: [anderson-neisse](https://www.linkedin.com/in/anderson-neisse/)
 
-Código da apresentação no [Github](https://github.com/aneisse/tutorial-rmarkdown)
+Código da apresentação no [Github](https://github.com/aneisse/aneisse/tree/master/content/slides/rmd-tutorial)
