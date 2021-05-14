@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "Slides em: bit.ly/rmdneisse"
+date: "Slides em: bit.ly/RMDNEISSE"
 bibliography: referencias.bib
 output:
   xaringan::moon_reader:
@@ -182,24 +182,21 @@ Mais detalhes nesse [post](https://medium.com/airbnb-engineering/using-r-package
 
 # E-mails personalizados
 
-O R Markdown permite gerar relatórios com programação!
+O R Markdown permite gerar relatórios personalizados **em massa** com programação!
 
-**Mine Çetinkaya-Rundel** criou mensagens personalizadas para um Workshop.
+Foi usado um template em R Markdown dentro de um `for()`, que pode ser checado [aqui](https://rmarkdown.rstudio.com/articles_mail_merge.html)!
 
+--
 
-```{r, out.height=200, out.width=350, echo=FALSE, fig.align='center'}
-knitr::include_graphics("img/rmd_emails.png")
+# No Tribunal de Justiça de Mato Grosso!
+
+No Menu de Estatística, criado recentemente, são usados relatórios em Rmarkdown e painéis em Qlik!
+
+Você pode verificar [aqui](https://estatistica.tjmt.jus.br/) (e reclamar pra mim se estiver ruim).
+
+```{r, echo=FALSE, out.height=170, out.width=700, fig.align='center'}
+knitr::include_graphics("img/estatistica-tjmt.png")
 ```
-
---
-
-Ela usou um template em R Markdown dentro de um `for()` e gerou 20 PDFs.
-
-Cada um com informações individuais e comuns entre os participantes.
-
---
-
-Detalhes técnicos de como ela fez [aqui](https://rmarkdown.rstudio.com/articles_mail_merge.html)!
 
 ---
 
@@ -324,7 +321,7 @@ O **RStudio** traz muitas facilidades como atalhos e comandos de compilação.
   
   - Cria um script com a estrutura já digitada.
 
-```{r, echo=FALSE, out.height=200, out.width=200, fig.align='center'}
+```{r, echo=FALSE, out.height=325, out.width=325, fig.align='center'}
 knitr::include_graphics("img/creation_frame.png")
 ```
 
@@ -372,7 +369,7 @@ Existem basicamente dois tipos de R Markdown: Documento e Apresentação.
 
 Na possibilidade de mais de um formato, o botão `knit` mostrará opções:
 
-```{r, echo=FALSE, fig.align='center'}
+```{r, echo=FALSE, out.height=200, out.width=200, fig.align='center'}
 knitr::include_graphics("img/format-dropdown.png")
 ```
 
@@ -450,12 +447,12 @@ Ou listas ordenadas com `1., 2., ...`:
 ```{r, eval=FALSE}
   1. Item
     + Subitem
-  2. Outro item
+  1. Outro item
 ```
 
   1. Item
     + Subitem
-  2. Outro item
+  1. Outro item
 
 ---
 # Equações
@@ -465,6 +462,9 @@ Equações na linha podem ser escritas dentro de um par de cifrões `$` em LaTeX
 `${n \choose k} p^{k} (1-p)^{n-k}$` retorna ${n \choose k} p^{k} (1-p)^{n-k}$
 
 --
+
+<br>
+<br>
 
 Equações multi-linha devem ser envolas em cifrões duplos `$$`:
 
@@ -516,6 +516,18 @@ Podemos inserir figuras locais (ou links da internet):
 
 ---
 
+# Figuras
+
+Podemos inserir figuras locais (ou links da internet):
+
+```{r, eval=FALSE}
+![Figura](img/blackhole-2.png)
+```
+
+![Figura](img/blackhole-2.png)
+
+---
+
 # Texto em blocos e citações
 
 Texto após o operador `>` fica em um bloco:
@@ -555,10 +567,11 @@ class: inverse, center, middle
 
 Todo código multi-linha em R deve ser inserido em *chunks* (pedaços). 
 
-```{r media, eval=FALSE}
-#Código dentro de um chunk
-mean(1:10)
+```{r, echo=FALSE, out.height=125, out.width=250, fig.align='center'}
+knitr::include_graphics("img/code-chunk.png")
 ```
+
+Atalho: **Ctrl + Alt + i**.
 
 --
 
@@ -568,22 +581,22 @@ mean(1:10)
 # Texto anterior `r código` texto posterior.
 ```
 
-Este valor foi calculado na geração do documento com `mean(1:10)`: `r mean(1:10)`.
+Utilizar `'r mean(1:10)'` retorna **`r mean(1:10)`** no ato de geração do documento.
 
-Permite muitas possibilidades de relatórios dinâmicos.
+Gera muitas possibilidades utilizando `ifelse()`, por exemplo.
 
 ---
 # Opções dos chunks
 
 Existem opções para códigos no relatório:
 
-  - `{r, echo = FALSE}`: Não mostra o código, somente o resultado;
-```{r, echo=FALSE}
-mean(1:10)
-```
-
   - `{r, eval = FALSE}`: Não roda o código, só o mostrando;
 ```{r, eval=FALSE, }
+mean(1:10)
+```
+ 
+  - `{r, echo = FALSE}`: Não mostra o código, somente o resultado;
+```{r, echo=FALSE}
 mean(1:10)
 ```
 
@@ -613,7 +626,7 @@ Existe uma vantagem quanto ao método do **Markdown** pela customização.
 
 Várias opções podem ser adicionadas, especialmente em HTML.
 
-Todas as opções para [HTML](http://haozhu233.github.io/kableExtra/awesome_table_in_html.html) e [PDF](http://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf).
+Todas as opções de tabela para [HTML](http://haozhu233.github.io/kableExtra/awesome_table_in_html.html) e [PDF](http://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf).
 ---
 
 # Imagens
@@ -869,7 +882,7 @@ Usando `{.tabset}` ao lado do nome de uma seção, da forma:
     chunk de código e/ou texto aqui
 Faz com que todas as suas subseções virem abas que podem ser navegadas.
 
-```{r, echo=FALSE, fig.align='center', out.height=200}
+```{r, echo=FALSE, fig.align='center', out.height=150, out.width=200}
 knitr::include_graphics("img/tabset.png")
 ```
 
@@ -1045,7 +1058,7 @@ Em apresentações elas se tornam os slides. Os formatatos disponíveis são:
   - [PowerPoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html): Com `output: powerpoint_presentation` no YAML. 
   
 --
-<br>,
+<br>
 
 O pacote `xaringan` introduz uma opção que usa [remark.js](https://remarkjs.com), uma biblioteca de JavaScript. 
 
@@ -1083,7 +1096,9 @@ O GitHub permite criar versões de testes e o Netlify permite testar estas vers�
 
 Um [tutorial completo](https://gohugo.io/hosting-and-deployment/hosting-on-netlify/) utilizando esta abordagem.
 
-O Netlify gera um link aleatório, mas permite inserção de domínios comprados.
+<br>
+
+[Exemplo do meu site em **aneisse.com** '-'](aneisse.com)
 
 ---
 
