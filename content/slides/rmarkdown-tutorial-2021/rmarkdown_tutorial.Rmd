@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "Slides em: bit.ly/2ZqczbW"
+date: "Slides em: bit.ly/rmdneisse"
 bibliography: referencias.bib
 output:
   xaringan::moon_reader:
