@@ -2,7 +2,7 @@
 title: "R Markdown"
 subtitle: "Introdução, aplicações e extensões"
 author: "Anderson Neisse"
-date: "Slides em: bit.ly/2ZqczbW"
+date: "Slides em: bit.ly/rmdneisse"
 bibliography: referencias.bib
 output:
   xaringan::moon_reader:
@@ -56,7 +56,7 @@ install.packages(pacotes)
 ]
 
 .pull-right[
-![image](http://hexb.in/vector/rmarkdown.svg)
+![image](img/rmarkdown.svg)
 ]
 
 [Markdown](https://en.wikipedia.org/wiki/Markdown) é uma linguagem para fácil escrita de documentos em HTML.
@@ -65,7 +65,7 @@ install.packages(pacotes)
 # Onde vive? 
 
 .pull-left[
-![image](http://hexb.in/vector/rstudio.svg)
+![image](img/rstudio.svg)
 ]
 
 .pull-right[
@@ -115,7 +115,7 @@ Mas seu uso facilita muito criação de documentos.
 ]
 
 .pull-right[
-![image](http://hexb.in/vector/knitr.svg)
+![image](img/knitr.svg)
 ]
 
 [Pandoc](https://pandoc.org/) é um conversor de documentos gratuito e de código aberto.
@@ -143,7 +143,7 @@ Entretanto esta idéia não foi criada pelo `rmarkdown`:
 Outras ferramentas também usam, como o [Jupyter Notebook](https://jupyter.org/) (Python).
 
 ```{r, echo=FALSE, out.height=170, out.width=400, fig.align='center'}
-knitr::include_graphics("python-modules.png")
+knitr::include_graphics("img/python-modules.png")
 ```
 
 
@@ -163,7 +163,7 @@ Documentam todas as análises em R com o R Markdown.
 Relatórios finais são revisados e mantidos em repositório de conhecimento.
   
 ```{r, out.height=180, out.width=150, echo=FALSE, fig.align='center'}
-knitr::include_graphics("https://logodownload.org/wp-content/uploads/2016/10/Airbnb-Logo-9.png")
+knitr::include_graphics("img/airbnb-logo.png")
 ```
 --
 
@@ -188,7 +188,7 @@ O R Markdown permite gerar relatórios com programação!
 
 
 ```{r, out.height=200, out.width=350, echo=FALSE, fig.align='center'}
-knitr::include_graphics("https://imageog.flaticon.com/icons/png/512/60/60543.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF")
+knitr::include_graphics("img/rmd_emails.png")
 ```
 
 --
@@ -281,21 +281,6 @@ Desta forma ao trocar entre projetos, os ambientes não se misturam.
 O Projeto também considera o `wd` como sendo a localização do **.RProj**.
 
 ---
-# Texto exemplo
-
-Texto que será utilizado para "dar corpo" a documentos de exemplo:
-
->Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-<br>
-
-Será utilizado durante o resto da aula.
-
-<br>
-
-Se quiser, salve em um **.txt** e o mantenha aberto.
-
----
 class: inverse, center, middle
 
 # Instalação e Início
@@ -340,7 +325,7 @@ O **RStudio** traz muitas facilidades como atalhos e comandos de compilação.
   - Cria um script com a estrutura já digitada.
 
 ```{r, echo=FALSE, out.height=200, out.width=200, fig.align='center'}
-knitr::include_graphics("creation_frame.png")
+knitr::include_graphics("img/creation_frame.png")
 ```
 
 --
@@ -388,7 +373,7 @@ Existem basicamente dois tipos de R Markdown: Documento e Apresentação.
 Na possibilidade de mais de um formato, o botão `knit` mostrará opções:
 
 ```{r, echo=FALSE, fig.align='center'}
-knitr::include_graphics("https://bookdown.org/yihui/rmarkdown/images/format-dropdown.png")
+knitr::include_graphics("img/format-dropdown.png")
 ```
 
 --
@@ -524,10 +509,10 @@ Veremos como criar tabelas mais elaboradas com `kableExtra`.
 Podemos inserir figuras locais (ou links da internet):
 
 ```{r, eval=FALSE}
-![Figura](blackhole.jpg)
+![Figura](img/blackhole-1.jpg)
 ```
 
-![Figura](blackhole.jpg)
+![Figura](img/blackhole-1.jpg)
 
 ---
 
@@ -885,7 +870,7 @@ Usando `{.tabset}` ao lado do nome de uma seção, da forma:
 Faz com que todas as suas subseções virem abas que podem ser navegadas.
 
 ```{r, echo=FALSE, fig.align='center', out.height=200}
-knitr::include_graphics("https://bookdown.org/yihui/rmarkdown/images/tabset.png")
+knitr::include_graphics("img/tabset.png")
 ```
 
 A opção `tabset-pills` dá um visual diferente. [Mais detalhes](https://bookdown.org/yihui/rmarkdown/html-document.html#tabbed-sections).
@@ -1028,7 +1013,7 @@ Mais informações em [Shiny](https://shiny.rstudio.com/tutorial/) e também [Sh
 O exemplo do slide anterior gera:
 
 ```{r, echo=FALSE, fig.align='center', out.height=425, out.width=500}
-knitr::include_graphics("shiny.png")
+knitr::include_graphics("img/shiny.png")
 ```
 
 --
